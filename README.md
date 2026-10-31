@@ -25,15 +25,14 @@ Os nomes dos menus do painel do Supabase podem ter mudado; se algo não bater, c
    ```sql
    insert into public.admins (user_id) values ('SEU-USER-ID');
    ```
-6. Copie `.env.example` para `.env.local` e preencha a URL e a chave pública do projeto.
+6. A URL e a chave pública do projeto ficam em `.env.production` (já preenchido). Para usar o banco real rodando no computador, copie esse arquivo para `.env.local`; sem isso, o `npm run dev` abre em modo demonstração.
 
 ## Publicar no GitHub Pages
 
 1. Em **Settings > Pages** do repositório, escolha **Source: GitHub Actions**.
-2. Em **Settings > Secrets and variables > Actions**, crie os segredos `VITE_SUPABASE_URL` e `VITE_SUPABASE_KEY` (os mesmos do `.env.local`). Sem eles, o site sai em modo demonstração.
-3. Cada push na `main` publica em `https://www.neybarao.com/boralah/` (o domínio próprio do seu GitHub Pages; o endereço `neybarao.github.io/boralah/` redireciona para ele).
+2. Cada push na `main` publica em `https://www.neybarao.com/boralah/` (o domínio próprio do seu GitHub Pages; o endereço `neybarao.github.io/boralah/` redireciona para ele).
 
-A chave usada aqui é a pública (anon/publishable), feita para ficar no navegador. Quem protege os dados são as regras de segurança do `schema.sql`: leitura aberta, escrita só para quem está na tabela `admins`.
+A chave em `.env.production` é a pública (publishable), feita para ficar no navegador. Nunca coloque a chave secreta (secret/service_role) no repositório. Quem protege os dados são as regras de segurança do `schema.sql`: leitura aberta, escrita só para quem está na tabela `admins`.
 
 ## Pausa do plano grátis
 

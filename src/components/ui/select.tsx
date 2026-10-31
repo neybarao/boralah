@@ -7,7 +7,7 @@ export function NativeSelect({ className, ...props }: ComponentProps<'select'>) 
     <select
       data-slot="select"
       className={cn(
-        'h-12 w-full rounded-lg font-medium border-[1.5px] border-input bg-background px-3 text-[15px] text-foreground outline-none focus-visible:border-ring',
+        'h-12 w-full rounded-lg font-medium border-[1.5px] border-input bg-background px-3 text-base text-foreground outline-none focus-visible:border-ring',
         className,
       )}
       {...props}

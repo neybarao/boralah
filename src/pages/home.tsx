@@ -56,7 +56,7 @@ export default function Home() {
             value={filters.query}
             onChange={(e) => set({ query: e.target.value })}
             placeholder="Buscar lugar, comida ou bairro"
-            className="min-w-0 flex-1 bg-transparent text-[15px] outline-none placeholder:text-muted-foreground"
+            className="min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-muted-foreground"
           />
         </label>
       </div>

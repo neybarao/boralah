@@ -24,11 +24,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # A URL e a chave pública do Supabase vêm do arquivo .env.production
       - run: npm run build
-        env:
-          # Sem esses segredos o app é publicado em modo demonstração.
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_KEY: ${{ secrets.VITE_SUPABASE_KEY }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

@@ -206,7 +206,7 @@ export default function PlaceForm() {
                   placeholder="Ex.: 1 a 3 anos"
                   value={form.kids_age ?? ''}
                   onChange={(e) => set('kids_age', text(e.target.value))}
-                  className="h-11 border-[#c9ddd0] text-sm"
+                  className="h-11 border-[#c9ddd0]"
                 />
               </Label>
             </>
@@ -224,7 +224,7 @@ export default function PlaceForm() {
                 <NativeSelect
                   value={form[key]}
                   onChange={(e) => set(key, e.target.value as YesNoUnknown)}
-                  className="h-11 border-[#c9ddd0] text-sm"
+                  className="h-11 border-[#c9ddd0]"
                 >
                   <option value="sim">Sim</option>
                   <option value="nao">Não</option>
