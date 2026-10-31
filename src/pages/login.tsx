@@ -1,46 +1,96 @@
 import { useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router'
 import { BackButton, Screen, TopBar } from '@/components/layout'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { backend } from '@/lib/data'
 
+// Login por código enviado no e-mail, digitado no próprio app.
+// Funciona dentro do PWA instalado no iPhone, que não compartilha login com o Safari.
 export default function Login() {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  const [code, setCode] = useState('')
+  const [step, setStep] = useState<'email' | 'code'>('email')
+  const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
 
-  async function submit(e: FormEvent) {
+  async function sendCode(e: FormEvent) {
     e.preventDefault()
-    setStatus('sending')
+    setBusy(true)
+    setError('')
     try {
       await backend.signIn(email.trim())
-      setStatus('sent')
+      setStep('code')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Não deu pra enviar')
-      setStatus('error')
+      setError(err instanceof Error ? err.message : 'Não deu pra enviar o código')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function verify(e: FormEvent) {
+    e.preventDefault()
+    setBusy(true)
+    setError('')
+    try {
+      await backend.verifyCode(email.trim(), code.trim())
+      navigate('/', { replace: true })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Código inválido')
+      setBusy(false)
     }
   }
 
   return (
     <Screen>
       <TopBar title="Entrar para editar" back={<BackButton to="/visitas" />} />
-      <form onSubmit={submit} className="flex flex-col gap-4 px-5 pt-4">
-        <p className="text-sm leading-relaxed text-muted-foreground">
-          Mandamos um link de acesso para o seu e-mail. Só contas autorizadas conseguem editar.
+
+      {step === 'email' ? (
+        <form onSubmit={sendCode} className="flex flex-col gap-4 px-5 pt-4">
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            Vamos mandar um código para o seu e-mail. Só contas autorizadas conseguem editar.
+          </p>
+          <Label>
+            E-mail
+            <Input type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          </Label>
+          <Button type="submit" size="lg" disabled={busy}>
+            {busy ? 'Enviando…' : 'Enviar código'}
+          </Button>
+        </form>
+      ) : (
+        <form onSubmit={verify} className="flex flex-col gap-4 px-5 pt-4">
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            Digite o código que chegou em <strong className="text-foreground">{email}</strong>.
+          </p>
+          <Label>
+            Código
+            <Input
+              required
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              pattern="[0-9]*"
+              value={code}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+              className="tracking-[0.3em]"
+            />
+          </Label>
+          <Button type="submit" size="lg" disabled={busy || code.length < 6}>
+            {busy ? 'Entrando…' : 'Entrar'}
+          </Button>
+          <Button type="button" variant="ghost" onClick={() => setStep('email')}>
+            Usar outro e-mail
+          </Button>
+        </form>
+      )}
+
+      {error && (
+        <p role="alert" className="px-5 pt-4 text-sm font-semibold text-primary">
+          {error}
         </p>
-        <Label>
-          E-mail
-          <Input type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        </Label>
-        <Button type="submit" size="lg" disabled={status === 'sending'}>
-          {status === 'sending' ? 'Enviando…' : 'Enviar link'}
-        </Button>
-        <p aria-live="polite" className="text-sm font-semibold">
-          {status === 'sent' && <span className="text-kids">Link enviado. Abra o e-mail neste aparelho.</span>}
-          {status === 'error' && <span className="text-primary">{error}</span>}
-        </p>
-      </form>
+      )}
     </Screen>
   )
 }

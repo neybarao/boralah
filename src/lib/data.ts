@@ -16,6 +16,7 @@ export interface Backend {
   uploadPhoto(file: Blob): Promise<string>
   isAdmin(): Promise<boolean>
   signIn(email: string): Promise<void>
+  verifyCode(email: string, code: string): Promise<void>
   signOut(): Promise<void>
   onAuthChange(cb: () => void): () => void
 }
@@ -68,11 +69,11 @@ function supabaseBackend(): Backend {
       return Boolean(row)
     },
     async signIn(email) {
-      const redirectTo = window.location.origin + import.meta.env.BASE_URL
-      const { error } = await db.auth.signInWithOtp({
-        email,
-        options: { emailRedirectTo: redirectTo, shouldCreateUser: false },
-      })
+      const { error } = await db.auth.signInWithOtp({ email, options: { shouldCreateUser: false } })
+      if (error) throw new Error(error.message)
+    },
+    async verifyCode(email, code) {
+      const { error } = await db.auth.verifyOtp({ email, token: code, type: 'email' })
       if (error) throw new Error(error.message)
     },
     async signOut() {
@@ -165,6 +166,7 @@ function demoBackend(): Backend {
       return true
     },
     async signIn() {},
+    async verifyCode() {},
     async signOut() {},
     onAuthChange() {
       return () => {}
