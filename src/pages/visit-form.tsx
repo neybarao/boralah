@@ -50,7 +50,7 @@ export default function VisitForm() {
         notes: notes.trim() || null,
       })
       await refresh()
-      navigate(`/lugar/${place!.id}`, { replace: true })
+      navigate(`/lugar/${place!.id}`, { replace: true, state: { back: true, toast: 'Visita salva' } })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Não deu pra salvar')
       setSaving(false)
@@ -76,12 +76,17 @@ export default function VisitForm() {
                 aria-label={n === 1 ? '1 estrela' : `${n} estrelas`}
                 aria-pressed={rating === n}
                 onClick={() => setRating(n)}
-                className="flex size-13 cursor-pointer items-center justify-center rounded-lg bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex size-13 cursor-pointer items-center justify-center rounded-lg bg-muted outline-none transition-transform duration-150 active:scale-90 focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <Star
+                  key={n <= rating ? `on-${rating}` : 'off'}
                   size={28}
                   strokeWidth={1.6}
-                  className={cn(n <= rating ? 'fill-star text-[#b57d0a]' : 'text-[#8a817a]')}
+                  style={{ animationDelay: `${(n - 1) * 45}ms` }}
+                  className={cn(
+                    'transition-colors duration-200',
+                    n <= rating ? 'animate-pop fill-star text-[#b57d0a]' : 'text-[#8a817a]',
+                  )}
                 />
               </button>
             ))}

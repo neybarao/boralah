@@ -38,15 +38,15 @@ export default function PlacePage() {
 
   return (
     <Screen className="pb-32">
-      <div className="relative">
+      <div className="relative overflow-hidden">
         {place.photos.length > 1 ? (
-          <div className="no-scrollbar flex h-65 snap-x snap-mandatory overflow-x-auto">
+          <div className="no-scrollbar animate-hero flex h-65 snap-x snap-mandatory overflow-x-auto">
             {place.photos.map((src) => (
               <img key={src} src={src} alt="" className="h-65 w-full shrink-0 snap-center object-cover" />
             ))}
           </div>
         ) : (
-          <PlaceThumb place={place} className="h-65 w-full" iconSize={48} />
+          <PlaceThumb place={place} className="animate-hero h-65 w-full" iconSize={48} />
         )}
         <div className="absolute inset-x-5 top-5 flex justify-between">
           <BackButton to="/" />
@@ -60,7 +60,7 @@ export default function PlacePage() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 px-5 pt-5">
+      <div className="animate-rise flex flex-col gap-2 px-5 pt-5 [animation-delay:80ms]">
         <h1 className="text-[26px] leading-tight font-extrabold tracking-tight">{place.name}</h1>
         <span className="text-sm font-medium text-muted-foreground">{placeMeta(place)}</span>
         <div className="mt-0.5 flex flex-wrap gap-1.5">
@@ -93,7 +93,7 @@ export default function PlacePage() {
       )}
 
       {place.kids_space && (
-        <section className="mx-5 mt-2 flex flex-col gap-2.5 rounded-xl bg-kids-surface px-4.5 py-4">
+        <section className="animate-rise mx-5 mt-2 flex flex-col gap-2.5 rounded-xl bg-kids-surface px-4.5 py-4 [animation-delay:160ms]">
           <h2 className="text-[15px] font-extrabold text-kids">Para o bebê</h2>
           <dl className="grid grid-cols-2 gap-x-4 gap-y-2.5 text-[13px] leading-snug">
             <div className="flex flex-col gap-0.5">
@@ -118,7 +118,7 @@ export default function PlacePage() {
 
       {place.notes && <p className="px-5 pt-5 text-sm leading-relaxed text-[#4a423c]">{place.notes}</p>}
 
-      <section className="flex flex-col px-5 pt-6">
+      <section className="animate-rise flex flex-col px-5 pt-6 [animation-delay:220ms]">
         <h2 className="mb-1.5 text-lg font-extrabold tracking-tight">Nossas visitas</h2>
         {mine.length === 0 && <p className="py-3 text-sm text-muted-foreground">Ainda não fomos. Bora?</p>}
         {mine.map((v) => (

@@ -78,7 +78,7 @@ export default function PlaceForm() {
     try {
       const saved = await backend.savePlace({ ...form, name: form.name.trim() }, existing?.id)
       await refresh()
-      navigate(`/lugar/${saved.id}`, { replace: true })
+      navigate(`/lugar/${saved.id}`, { replace: true, state: { toast: existing ? 'Lugar atualizado' : 'Lugar cadastrado' } })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Não deu pra salvar')
       setSaving(false)
@@ -89,7 +89,7 @@ export default function PlaceForm() {
     if (!existing || !confirm(`Apagar "${existing.name}" e todas as visitas dele?`)) return
     await backend.deletePlace(existing.id)
     await refresh()
-    navigate('/', { replace: true })
+    navigate('/', { replace: true, state: { back: true, toast: 'Lugar apagado' } })
   }
 
   return (
@@ -99,7 +99,7 @@ export default function PlaceForm() {
       <form id="place" onSubmit={submit} className="flex flex-col gap-5.5 px-5 pt-4">
         <div className="no-scrollbar flex gap-2.5 overflow-x-auto">
           {form.photos.map((src) => (
-            <div key={src} className="relative size-24 shrink-0">
+            <div key={src} className="animate-pop relative size-24 shrink-0">
               <img src={src} alt="" className="size-24 rounded-xl object-cover" />
               <button
                 type="button"

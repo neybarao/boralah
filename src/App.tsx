@@ -1,4 +1,5 @@
 import { HashRouter, Route, Routes } from 'react-router'
+import { Toast } from '@/components/layout'
 import { StoreProvider } from '@/lib/store'
 import Draw from '@/pages/draw'
 import Home from '@/pages/home'
@@ -26,6 +27,7 @@ export default function App() {
           <Route path="/lugar/:id/visita" element={<VisitForm />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <Toast />
       </HashRouter>
     </StoreProvider>
   )

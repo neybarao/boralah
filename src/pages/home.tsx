@@ -1,5 +1,6 @@
 import { Baby, Dices, Plus, Search, Star } from 'lucide-react'
 import { useMemo } from 'react'
+import type React from 'react'
 import { Link } from 'react-router'
 import { BottomNav, Screen } from '@/components/layout'
 import { PlaceRow } from '@/components/place-row'
@@ -86,12 +87,21 @@ export default function Home() {
           <div className="flex flex-col gap-1">
             <span className="text-xl leading-tight font-extrabold">Sem ideia? A gente escolhe.</span>
             <span className="text-sm leading-snug font-medium text-[#fff1ec]">
-              Sorteia entre {list.length === 1 ? 'o 1 lugar' : `os ${list.length} lugares`} que passam nos seus filtros.
+              Sorteia entre {list.length === 1 ? 'o' : 'os'}{' '}
+              <span key={list.length} className="animate-pop inline-block font-extrabold text-primary-foreground">
+                {list.length}
+              </span>{' '}
+              {list.length === 1 ? 'lugar' : 'lugares'} que passam nos seus filtros.
             </span>
           </div>
-          <Button asChild variant="inverse" className="self-start">
+          <Button asChild variant="inverse" className="group self-start">
             <Link to="/sortear">
-              <Dices size={18} aria-hidden="true" /> Decide pra mim
+              <Dices
+                size={18}
+                aria-hidden="true"
+                className="transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:rotate-[200deg] group-active:rotate-[200deg]"
+              />{' '}
+              Decide pra mim
             </Link>
           </Button>
         </div>
@@ -101,9 +111,17 @@ export default function Home() {
         <section className="pt-5">
           <h2 className="px-5 text-lg font-extrabold tracking-tight">Faz tempo que não vamos</h2>
           <div className="no-scrollbar flex gap-3 overflow-x-auto px-5 pt-3 pb-1">
-            {stale.map((p) => (
-              <Link key={p.id} to={`/lugar/${p.id}`} className="flex w-33 shrink-0 flex-col gap-2">
-                <PlaceThumb place={p} className="h-24 w-33 rounded-lg" />
+            {stale.map((p, i) => (
+              <Link
+                key={p.id}
+                to={`/lugar/${p.id}`}
+                style={{ '--i': i } as React.CSSProperties}
+                className="group animate-rise stagger flex w-33 shrink-0 flex-col gap-2"
+              >
+                <PlaceThumb
+                  place={p}
+                  className="h-24 w-33 rounded-lg transition-transform duration-200 ease-out group-active:scale-95"
+                />
                 <span className="text-sm leading-tight font-bold">{p.name}</span>
                 <span className="text-xs font-medium text-muted-foreground">Última vez {timeAgo(p.last_visit!)}</span>
               </Link>
@@ -120,7 +138,19 @@ export default function Home() {
           </span>
         </div>
 
-        {loading && <p className="py-8 text-center text-sm text-muted-foreground">Carregando…</p>}
+        {loading && (
+          <div aria-label="Carregando" className="mt-2 flex flex-col">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="flex gap-3.5 border-b border-[#efe9e3] py-3">
+                <div className="animate-shimmer size-21 rounded-lg bg-muted" />
+                <div className="flex flex-1 flex-col justify-center gap-2">
+                  <div className="animate-shimmer h-4 w-2/3 rounded bg-muted" />
+                  <div className="animate-shimmer h-3 w-1/2 rounded bg-muted" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
         {error && (
           <p role="alert" className="mt-4 rounded-lg bg-primary/10 p-4 text-sm font-semibold text-primary">
             Não deu pra carregar os lugares: {error}
@@ -128,7 +158,7 @@ export default function Home() {
         )}
 
         {!loading && !error && list.length === 0 && (
-          <div className="mt-4 flex flex-col items-start gap-1.5 rounded-lg bg-muted p-6">
+          <div className="animate-rise mt-4 flex flex-col items-start gap-1.5 rounded-lg bg-muted p-6">
             <span className="text-[15px] font-bold">Nenhum lugar com esses filtros</span>
             <span className="text-sm leading-snug text-muted-foreground">Tente tirar um filtro ou cadastre um lugar novo.</span>
             <Button variant="outline" className="mt-2" onClick={() => setFilters({ ...DEFAULT_FILTERS, kids: false })}>
@@ -138,8 +168,8 @@ export default function Home() {
         )}
 
         <div className="mt-2 flex flex-col">
-          {list.map((p) => (
-            <PlaceRow key={p.id} place={p} />
+          {list.map((p, i) => (
+            <PlaceRow key={p.id} place={p} index={i} />
           ))}
         </div>
       </section>

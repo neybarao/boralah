@@ -13,7 +13,7 @@ export function Chip({
       type="button"
       aria-pressed={active}
       className={cn(
-        'inline-flex h-11 shrink-0 cursor-pointer items-center gap-1.5 rounded-full px-4 text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        'inline-flex h-11 shrink-0 cursor-pointer items-center gap-1.5 rounded-full px-4 text-sm transition-[transform,background-color,border-color,color] duration-200 ease-out active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-ring',
         tone === 'dark' &&
           (active
             ? 'border-[1.5px] border-foreground bg-foreground font-extrabold text-background'
