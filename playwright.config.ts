@@ -7,6 +7,8 @@ import { defineConfig, devices } from '@playwright/test'
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
+  // update.spec altera o sw.js publicado; os outros arquivos bloqueiam service worker e não são afetados
+
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? 'github' : 'list',

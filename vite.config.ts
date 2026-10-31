@@ -17,7 +17,8 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // O app avisa que há versão nova e só atualiza quando a pessoa toca (src/components/update-prompt.tsx)
+      registerType: 'prompt',
       includeAssets: ['favicon.png', 'apple-touch-icon.png'],
       manifest: {
         name: 'BoraLah',

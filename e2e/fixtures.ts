@@ -7,8 +7,8 @@ import { test as base, expect } from '@playwright/test'
 export const test = base.extend<{ errors: string[] }>({
   errors: [
     async ({ page }, use) => {
-      // Fontes externas respondem vazio: o teste não depende de internet
-      await page.route(/fonts\.(googleapis|gstatic)\.com/, (r) =>
+      // Fontes externas respondem vazio, inclusive as pedidas pelo service worker: o teste não depende de internet
+      await page.context().route(/fonts\.(googleapis|gstatic)\.com/, (r) =>
         r.fulfill({ status: 200, contentType: 'text/css', body: '' }),
       )
       const errors: string[] = []

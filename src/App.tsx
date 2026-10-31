@@ -1,5 +1,6 @@
 import { HashRouter, Route, Routes } from 'react-router'
 import { Toast } from '@/components/layout'
+import { UpdatePrompt } from '@/components/update-prompt'
 import { StoreProvider } from '@/lib/store'
 import Draw from '@/pages/draw'
 import Home from '@/pages/home'
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Toast />
+        <UpdatePrompt />
       </HashRouter>
     </StoreProvider>
   )
