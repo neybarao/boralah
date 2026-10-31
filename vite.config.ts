@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
-// O GitHub Pages serve o projeto em https://neybarao.github.io/boralah/
+// O GitHub Pages serve o projeto em https://www.neybarao.com/boralah/ (domínio próprio do usuário)
 // Se mudar o nome do repositório ou usar domínio próprio, ajuste o BASE.
 const BASE = '/boralah/'
 

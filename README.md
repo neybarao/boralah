@@ -20,7 +20,7 @@ Os nomes dos menus do painel do Supabase podem ter mudado; se algo não bater, c
 1. Crie um projeto em [supabase.com](https://supabase.com) (plano grátis).
 2. No **SQL Editor**, cole e rode o arquivo [`supabase/schema.sql`](supabase/schema.sql). Ele cria as tabelas, as regras de segurança e o bucket de fotos.
 3. Em **Authentication**, desative novos cadastros públicos (sign ups), para ninguém além de você conseguir criar conta. Depois convide ou crie o seu usuário com o seu e-mail.
-4. Em **Authentication > URL Configuration**, adicione `https://neybarao.github.io/boralah/` (e `http://localhost:5173/boralah/` para testar localmente) nas URLs de redirecionamento.
+4. Em **Authentication > URL Configuration**, adicione `https://www.neybarao.com/boralah/` (e `http://localhost:5173/boralah/` para testar localmente) nas URLs de redirecionamento.
 5. Pegue o seu user id em **Authentication > Users** e rode no SQL Editor:
    ```sql
    insert into public.admins (user_id) values ('SEU-USER-ID');
@@ -31,7 +31,7 @@ Os nomes dos menus do painel do Supabase podem ter mudado; se algo não bater, c
 
 1. Em **Settings > Pages** do repositório, escolha **Source: GitHub Actions**.
 2. Em **Settings > Secrets and variables > Actions**, crie os segredos `VITE_SUPABASE_URL` e `VITE_SUPABASE_KEY` (os mesmos do `.env.local`). Sem eles, o site sai em modo demonstração.
-3. Cada push na `main` publica em `https://neybarao.github.io/boralah/`.
+3. Cada push na `main` publica em `https://www.neybarao.com/boralah/` (o domínio próprio do seu GitHub Pages; o endereço `neybarao.github.io/boralah/` redireciona para ele).
 
 A chave usada aqui é a pública (anon/publishable), feita para ficar no navegador. Quem protege os dados são as regras de segurança do `schema.sql`: leitura aberta, escrita só para quem está na tabela `admins`.
 
