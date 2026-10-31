@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+/* Tokens no formato do shadcn/ui, com a paleta do protótipo */
+:root {
+  --background: #ffffff;
+  --foreground: #1f1a17;
+  --muted: #f5f2ef;
+  --muted-foreground: #6b625c;
+  --border: #e6dfd8;
+  --input: #ddd5ce;
+  --primary: #c8361f;
+  --primary-foreground: #ffffff;
+  --secondary: #1f1a17;
+  --secondary-foreground: #ffffff;
+  --kids: #1b6b43;
+  --kids-soft: #e3f2e9;
+  --kids-surface: #f2f8f4;
+  --star: #e8a317;
+  --ring: #c8361f;
+  --radius: 14px;
+}
+
+@theme inline {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-kids: var(--kids);
+  --color-kids-soft: var(--kids-soft);
+  --color-kids-surface: var(--kids-surface);
+  --color-star: var(--star);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 6px);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom), 12px);
+}
