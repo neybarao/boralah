@@ -17,7 +17,7 @@ const AGAIN: Record<WouldReturn, string> = { sim: 'Voltaríamos', talvez: 'Talve
 
 function Stars({ value }: { value: number }) {
   return (
-    <span className="text-[13px] font-bold text-[#4a423c]" aria-label={`Nota ${formatRating(value)} de 5`}>
+    <span className="text-[13px] font-bold text-text-soft" aria-label={`Nota ${formatRating(value)} de 5`}>
       <span aria-hidden="true" className="text-star">
         {'★'.repeat(Math.floor(value))}
         {value % 1 ? '½' : ''}
@@ -51,7 +51,7 @@ export default function PlacePage() {
         <div className="absolute inset-x-5 top-5 flex justify-between">
           <BackButton to="/" />
           {isAdmin && (
-            <Button asChild variant="inverse" size="icon" aria-label="Editar lugar" className="text-foreground">
+            <Button asChild variant="muted" size="icon" aria-label="Editar lugar" className="bg-background hover:bg-background/90">
               <Link to={`/lugar/${place.id}/editar`}>
                 <Pencil size={18} />
               </Link>
@@ -97,37 +97,37 @@ export default function PlacePage() {
           <h2 className="text-[15px] font-extrabold text-kids">Para o bebê</h2>
           <dl className="grid grid-cols-2 gap-x-4 gap-y-2.5 text-[13px] leading-snug">
             <div className="flex flex-col gap-0.5">
-              <dt className="font-semibold text-[#4a6b57]">Espaço</dt>
+              <dt className="font-semibold text-kids-label">Espaço</dt>
               <dd className="font-bold">{place.kids_types.join(', ') || 'Tem'}</dd>
             </div>
             <div className="flex flex-col gap-0.5">
-              <dt className="font-semibold text-[#4a6b57]">Bom pra idade</dt>
+              <dt className="font-semibold text-kids-label">Bom pra idade</dt>
               <dd className="font-bold">{place.kids_age || 'Não sei'}</dd>
             </div>
             <div className="flex flex-col gap-0.5">
-              <dt className="font-semibold text-[#4a6b57]">Cadeirão</dt>
+              <dt className="font-semibold text-kids-label">Cadeirão</dt>
               <dd className="font-bold">{YNU[place.high_chair]}</dd>
             </div>
             <div className="flex flex-col gap-0.5">
-              <dt className="font-semibold text-[#4a6b57]">Trocador</dt>
+              <dt className="font-semibold text-kids-label">Trocador</dt>
               <dd className="font-bold">{YNU[place.changing_table]}</dd>
             </div>
           </dl>
         </section>
       )}
 
-      {place.notes && <p className="px-5 pt-5 text-sm leading-relaxed text-[#4a423c]">{place.notes}</p>}
+      {place.notes && <p className="px-5 pt-5 text-sm leading-relaxed text-text-soft">{place.notes}</p>}
 
       <section className="animate-rise flex flex-col px-5 pt-6 [animation-delay:220ms]">
         <h2 className="mb-1.5 text-lg font-extrabold tracking-tight">Nossas visitas</h2>
         {mine.length === 0 && <p className="py-3 text-sm text-muted-foreground">Ainda não fomos. Bora?</p>}
         {mine.map((v) => (
-          <article key={v.id} className="flex flex-col gap-1.5 border-b border-[#efe9e3] py-3.5">
+          <article key={v.id} className="flex flex-col gap-1.5 border-b border-line py-3.5">
             <div className="flex items-center justify-between gap-3">
               <span className="text-sm font-bold">{formatDate(v.visited_on)}</span>
               <Stars value={v.rating} />
             </div>
-            {v.notes && <p className="text-sm leading-snug text-[#4a423c]">{v.notes}</p>}
+            {v.notes && <p className="text-sm leading-snug text-text-soft">{v.notes}</p>}
             <div className="flex items-center justify-between gap-3">
               <span className="text-xs font-semibold text-muted-foreground">
                 {[

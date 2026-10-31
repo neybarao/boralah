@@ -2,7 +2,8 @@ import { UtensilsCrossed } from 'lucide-react'
 import type { Place } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
-const TINTS = ['#F6E3C8', '#F3D6CF', '#E9DCCF', '#F7E1C1', '#DCE8E4', '#F4E8C4', '#E6DDEE']
+// Cores vêm dos tokens --tint-0..6, que mudam no tema escuro
+const TINTS = Array.from({ length: 7 }, (_, i) => `var(--tint-${i})`)
 
 function tintFor(id: string) {
   let h = 0

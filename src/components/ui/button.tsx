@@ -13,7 +13,7 @@ const buttonVariants = cva(
         outline: 'border-[1.5px] border-foreground bg-background text-foreground hover:bg-muted',
         muted: 'bg-muted text-foreground hover:bg-muted/70',
         ghost: 'text-foreground hover:bg-muted',
-        inverse: 'bg-background text-primary hover:bg-background/90',
+        inverse: 'bg-primary-foreground text-primary hover:bg-primary-foreground/90',
       },
       size: {
         default: 'h-11 px-5 text-[15px]',

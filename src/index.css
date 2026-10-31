@@ -2,22 +2,81 @@
 
 /* Tokens no formato do shadcn/ui, com a paleta do protótipo */
 :root {
+  color-scheme: light;
   --background: #ffffff;
   --foreground: #1f1a17;
   --muted: #f5f2ef;
   --muted-foreground: #6b625c;
   --border: #e6dfd8;
   --input: #ddd5ce;
+  --line: #efe9e3;
+  --text-soft: #4a423c;
+  --control-off: #b9afa7;
+  --dashed-surface: #faf8f6;
   --primary: #c8361f;
   --primary-foreground: #ffffff;
+  --primary-soft-foreground: #fff1ec;
   --secondary: #1f1a17;
   --secondary-foreground: #ffffff;
   --kids: #1b6b43;
   --kids-soft: #e3f2e9;
   --kids-surface: #f2f8f4;
+  --kids-label: #4a6b57;
+  --kids-border: #c9ddd0;
+  --notice: #fff4d6;
+  --notice-foreground: #6b4e00;
   --star: #e8a317;
+  --star-text: #b57d0a;
+  --star-off: #8a817a;
+  --shadow-color: rgb(31 26 23 / 0.25);
   --ring: #c8361f;
   --radius: 14px;
+  --tint-0: #f6e3c8;
+  --tint-1: #f3d6cf;
+  --tint-2: #e9dccf;
+  --tint-3: #f7e1c1;
+  --tint-4: #dce8e4;
+  --tint-5: #f4e8c4;
+  --tint-6: #e6ddee;
+}
+
+/* Tema escuro: o script no index.html define data-theme antes da primeira pintura */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --background: #16120f;
+  --foreground: #f3ede8;
+  --muted: #241e1a;
+  --muted-foreground: #a99f97;
+  --border: #3a322c;
+  --input: #4a413a;
+  --line: #2a231e;
+  --text-soft: #d2c9c2;
+  --control-off: #5e544d;
+  --dashed-surface: #1d1814;
+  --primary: #e04a30;
+  --primary-foreground: #ffffff;
+  --primary-soft-foreground: #fff1ec;
+  --secondary: #f3ede8;
+  --secondary-foreground: #16120f;
+  --kids: #5ec38f;
+  --kids-soft: #173326;
+  --kids-surface: #12201a;
+  --kids-label: #92bba2;
+  --kids-border: #2f4a3b;
+  --notice: #3a2e10;
+  --notice-foreground: #f3d68a;
+  --star: #f0b429;
+  --star-text: #f0b429;
+  --star-off: #7d736b;
+  --shadow-color: rgb(0 0 0 / 0.6);
+  --ring: #e04a30;
+  --tint-0: #3a2f22;
+  --tint-1: #3b2824;
+  --tint-2: #33291f;
+  --tint-3: #3c3020;
+  --tint-4: #23322d;
+  --tint-5: #393220;
+  --tint-6: #2f2a38;
 }
 
 @theme inline {
@@ -35,6 +94,17 @@
   --color-kids: var(--kids);
   --color-kids-soft: var(--kids-soft);
   --color-kids-surface: var(--kids-surface);
+  --color-kids-label: var(--kids-label);
+  --color-kids-border: var(--kids-border);
+  --color-line: var(--line);
+  --color-text-soft: var(--text-soft);
+  --color-control-off: var(--control-off);
+  --color-dashed-surface: var(--dashed-surface);
+  --color-primary-soft-foreground: var(--primary-soft-foreground);
+  --color-notice: var(--notice);
+  --color-notice-foreground: var(--notice-foreground);
+  --color-star-text: var(--star-text);
+  --color-star-off: var(--star-off);
   --color-star: var(--star);
   --color-ring: var(--ring);
   --radius-sm: calc(var(--radius) - 6px);
@@ -56,6 +126,7 @@
   }
   body {
     background: var(--color-background);
+    transition: background-color 200ms ease, color 200ms ease;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;

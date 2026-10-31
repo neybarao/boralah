@@ -85,7 +85,7 @@ export default function VisitForm() {
                   style={{ animationDelay: `${(n - 1) * 45}ms` }}
                   className={cn(
                     'transition-colors duration-200',
-                    n <= rating ? 'animate-pop fill-star text-[#b57d0a]' : 'text-[#8a817a]',
+                    n <= rating ? 'animate-pop fill-star text-star-text' : 'text-star-off',
                   )}
                 />
               </button>

@@ -14,6 +14,16 @@
       rel="stylesheet"
     />
     <title>BoraLah</title>
+    <script>
+      // Aplica o tema antes da primeira pintura para não piscar branco
+      ;(function () {
+        var t
+        try { t = localStorage.getItem('boralah-theme') } catch (e) {}
+        if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        document.documentElement.dataset.theme = t
+        if (t === 'dark') document.querySelector('meta[name="theme-color"]').setAttribute('content', '#16120F')
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

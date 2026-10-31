@@ -26,7 +26,7 @@ export default function Visits() {
           const place = getPlace(v.place_id)
           if (!place) return null
           return (
-            <Link key={v.id} to={`/lugar/${place.id}`} className="flex flex-col gap-1 border-b border-[#efe9e3] py-3.5">
+            <Link key={v.id} to={`/lugar/${place.id}`} className="flex flex-col gap-1 border-b border-line py-3.5">
               <div className="flex items-baseline justify-between gap-3">
                 <span className="truncate text-[15px] font-bold">{place.name}</span>
                 <span className="shrink-0 text-[13px] font-bold">
@@ -34,7 +34,7 @@ export default function Visits() {
                 </span>
               </div>
               <span className="text-xs font-semibold text-muted-foreground">{formatDate(v.visited_on)}</span>
-              {v.notes && <p className="line-clamp-2 text-sm leading-snug text-[#4a423c]">{v.notes}</p>}
+              {v.notes && <p className="line-clamp-2 text-sm leading-snug text-text-soft">{v.notes}</p>}
             </Link>
           )
         })}

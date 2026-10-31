@@ -89,7 +89,7 @@ export function TopBar({ title, subtitle, back }: { title: string; subtitle?: st
 export function StickyAction({ children }: { children: ReactNode }) {
   return (
     <Fixed>
-      <div className="pb-safe animate-rise fixed inset-x-0 bottom-0 z-10 mx-auto w-full max-w-md border-t border-[#efe9e3] bg-background px-5 pt-3.5 [animation-delay:120ms]">
+      <div className="pb-safe animate-rise fixed inset-x-0 bottom-0 z-10 mx-auto w-full max-w-md border-t border-line bg-background px-5 pt-3.5 [animation-delay:120ms]">
         {children}
       </div>
     </Fixed>
@@ -107,7 +107,7 @@ export function BottomNav() {
     <Fixed>
     <nav
       aria-label="Navegação principal"
-      className="pb-safe fixed inset-x-0 bottom-0 z-10 mx-auto grid w-full max-w-md grid-cols-3 border-t border-[#efe9e3] bg-background pt-2"
+      className="pb-safe fixed inset-x-0 bottom-0 z-10 mx-auto grid w-full max-w-md grid-cols-3 border-t border-line bg-background pt-2"
     >
       {tabs.map(({ to, label, Icon, end }) => (
         <NavLink

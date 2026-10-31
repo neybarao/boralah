@@ -111,7 +111,7 @@ export default function PlaceForm() {
               </button>
             </div>
           ))}
-          <label className="flex size-24 shrink-0 cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-[1.5px] border-dashed border-[#b9afa7] bg-[#faf8f6] text-xs font-bold text-[#4a423c]">
+          <label className="flex size-24 shrink-0 cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-[1.5px] border-dashed border-control-off bg-dashed-surface text-xs font-bold text-text-soft">
             <Camera size={24} strokeWidth={1.8} aria-hidden="true" />
             {uploading ? 'Enviando…' : 'Adicionar fotos'}
             <input
@@ -184,7 +184,7 @@ export default function PlaceForm() {
           {form.kids_space && (
             <>
               <fieldset>
-                <legend className="mb-2 text-[13px] font-bold text-[#4a6b57]">Que tipo</legend>
+                <legend className="mb-2 text-[13px] font-bold text-kids-label">Que tipo</legend>
                 <div className="flex flex-wrap gap-2">
                   {KIDS_TYPES.map((k) => {
                     const on = form.kids_types.includes(k)
@@ -200,13 +200,13 @@ export default function PlaceForm() {
                   })}
                 </div>
               </fieldset>
-              <Label className="text-[13px] text-[#4a6b57]">
+              <Label className="text-[13px] text-kids-label">
                 Bom pra idade
                 <Input
                   placeholder="Ex.: 1 a 3 anos"
                   value={form.kids_age ?? ''}
                   onChange={(e) => set('kids_age', text(e.target.value))}
-                  className="h-11 border-[#c9ddd0]"
+                  className="h-11 border-kids-border"
                 />
               </Label>
             </>
@@ -219,12 +219,12 @@ export default function PlaceForm() {
                 ['changing_table', 'Trocador'],
               ] as const
             ).map(([key, label]) => (
-              <Label key={key} className="gap-1.5 text-[13px] text-[#4a6b57]">
+              <Label key={key} className="gap-1.5 text-[13px] text-kids-label">
                 {label}
                 <NativeSelect
                   value={form[key]}
                   onChange={(e) => set(key, e.target.value as YesNoUnknown)}
-                  className="h-11 border-[#c9ddd0]"
+                  className="h-11 border-kids-border"
                 >
                   <option value="sim">Sim</option>
                   <option value="nao">Não</option>

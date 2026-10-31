@@ -113,8 +113,8 @@ export default function Draw() {
             <div
               key={rolling ? 'rolling' : `done-${round}`}
               className={cn(
-                'flex flex-col overflow-hidden rounded-2xl border-[1.5px] border-[#efe9e3] bg-background',
-                rolling ? 'scale-[0.97] shadow-none' : 'animate-settle shadow-[0_12px_32px_-12px_rgba(31,26,23,0.25)]',
+                'flex flex-col overflow-hidden rounded-2xl border-[1.5px] border-line bg-background',
+                rolling ? 'scale-[0.97] shadow-none' : 'animate-settle shadow-[0_12px_32px_-12px_var(--shadow-color)]',
               )}
             >
               <PlaceThumb place={place} className="h-55 w-full" iconSize={44} />

@@ -23,7 +23,7 @@ export function PlaceRow({ place, index = 0 }: { place: PlaceWithStats; index?: 
     <Link
       to={`/lugar/${place.id}`}
       style={{ '--i': index } as React.CSSProperties}
-      className="group animate-rise stagger flex gap-3.5 border-b border-[#efe9e3] py-3 outline-none focus-visible:bg-muted"
+      className="group animate-rise stagger flex gap-3.5 border-b border-line py-3 outline-none focus-visible:bg-muted"
     >
       <PlaceThumb
         place={place}

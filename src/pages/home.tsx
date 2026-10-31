@@ -1,4 +1,4 @@
-import { Baby, Dices, Plus, Search, Star } from 'lucide-react'
+import { Baby, Dices, Moon, Plus, Search, Star, Sun } from 'lucide-react'
 import { useMemo } from 'react'
 import type React from 'react'
 import { Link } from 'react-router'
@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Chip } from '@/components/ui/chip'
 import { isDemo } from '@/lib/supabase'
 import { useStore } from '@/lib/store'
+import { useTheme } from '@/lib/theme'
 import { CATEGORIES } from '@/lib/types'
 import { applyFilters, daysSince, DEFAULT_FILTERS, timeAgo } from '@/lib/utils'
 
@@ -16,6 +17,7 @@ const STALE_DAYS = 45
 
 export default function Home() {
   const { places, loading, error, isAdmin, filters, setFilters } = useStore()
+  const { theme, toggle } = useTheme()
   const list = useMemo(() => applyFilters(places, filters), [places, filters])
   const stale = useMemo(
     () =>
@@ -29,7 +31,7 @@ export default function Home() {
   return (
     <Screen className="pb-28">
       {isDemo && (
-        <p className="bg-[#fff4d6] px-5 py-2 text-center text-xs font-semibold text-[#6b4e00]">
+        <p className="bg-notice px-5 py-2 text-center text-xs font-semibold text-notice-foreground">
           Modo demonstração: dados fictícios salvos só neste aparelho
         </p>
       )}
@@ -39,13 +41,27 @@ export default function Home() {
           <span className="text-xs font-semibold text-muted-foreground">BoraLah</span>
           <h1 className="text-[22px] font-extrabold tracking-tight">Onde comer hoje?</h1>
         </div>
-        {isAdmin && (
-          <Button asChild variant="muted" size="icon" aria-label="Cadastrar novo lugar">
-            <Link to="/novo">
-              <Plus size={22} />
-            </Link>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="muted"
+            size="icon"
+            onClick={toggle}
+            aria-label={theme === 'dark' ? 'Usar tema claro' : 'Usar tema escuro'}
+          >
+            {theme === 'dark' ? (
+              <Sun key="sun" size={21} className="animate-pop" />
+            ) : (
+              <Moon key="moon" size={20} className="animate-pop" />
+            )}
           </Button>
-        )}
+          {isAdmin && (
+            <Button asChild variant="muted" size="icon" aria-label="Cadastrar novo lugar">
+              <Link to="/novo">
+                <Plus size={22} />
+              </Link>
+            </Button>
+          )}
+        </div>
       </header>
 
       <div className="px-5 pt-2 pb-1">
@@ -86,7 +102,7 @@ export default function Home() {
         <div className="flex flex-col gap-3.5 rounded-xl bg-primary p-5 text-primary-foreground">
           <div className="flex flex-col gap-1">
             <span className="text-xl leading-tight font-extrabold">Sem ideia? A gente escolhe.</span>
-            <span className="text-sm leading-snug font-medium text-[#fff1ec]">
+            <span className="text-sm leading-snug font-medium text-primary-soft-foreground">
               Sorteia entre {list.length === 1 ? 'o' : 'os'}{' '}
               <span key={list.length} className="animate-pop inline-block font-extrabold text-primary-foreground">
                 {list.length}
@@ -141,7 +157,7 @@ export default function Home() {
         {loading && (
           <div aria-label="Carregando" className="mt-2 flex flex-col">
             {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="flex gap-3.5 border-b border-[#efe9e3] py-3">
+              <div key={i} className="flex gap-3.5 border-b border-line py-3">
                 <div className="animate-shimmer size-21 rounded-lg bg-muted" />
                 <div className="flex flex-1 flex-col justify-center gap-2">
                   <div className="animate-shimmer h-4 w-2/3 rounded bg-muted" />

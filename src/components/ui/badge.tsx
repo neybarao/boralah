@@ -7,7 +7,7 @@ const badgeVariants = cva('inline-flex items-center rounded-sm px-2 py-0.5 text-
     variant: {
       kids: 'bg-kids-soft text-kids',
       new: 'bg-primary/10 text-primary',
-      neutral: 'bg-muted text-[#4a423c]',
+      neutral: 'bg-muted text-text-soft',
     },
   },
   defaultVariants: { variant: 'neutral' },
