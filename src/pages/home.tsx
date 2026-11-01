@@ -1,4 +1,4 @@
-import { Baby, Dices, Moon, Plus, Search, Star, Sun } from 'lucide-react'
+import { Baby, Dices, LogIn, Moon, Plus, Search, Star, Sun } from 'lucide-react'
 import { useMemo } from 'react'
 import type React from 'react'
 import { Link } from 'react-router'
@@ -54,6 +54,13 @@ export default function Home() {
               <Moon key="moon" size={20} className="animate-pop" />
             )}
           </Button>
+          {!isDemo && !isAdmin && (
+            <Button asChild variant="muted" size="icon" aria-label="Entrar para editar">
+              <Link to="/entrar">
+                <LogIn size={20} />
+              </Link>
+            </Button>
+          )}
           {isAdmin && (
             <Button asChild variant="muted" size="icon" aria-label="Cadastrar novo lugar">
               <Link to="/novo">

@@ -45,7 +45,7 @@ export default function Login() {
 
   return (
     <Screen>
-      <TopBar title="Entrar para editar" back={<BackButton to="/visitas" />} />
+      <TopBar title="Entrar para editar" back={<BackButton to="/" />} />
 
       {step === 'email' ? (
         <form onSubmit={sendCode} className="flex flex-col gap-4 px-5 pt-4">
