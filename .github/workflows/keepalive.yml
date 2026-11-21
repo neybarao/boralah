@@ -2,10 +2,10 @@ name: Manter Supabase acordado
 
 # O plano grátis do Supabase pausa projetos com pouca atividade em 7 dias.
 # A documentação pede algumas consultas por dia na última semana,
-# então esta tarefa faz uma leitura simples no banco 3 vezes ao dia.
+# então esta tarefa faz uma leitura simples no banco a cada 4 horas.
 on:
   schedule:
-    - cron: '17 2,10,18 * * *'
+    - cron: '17 */4 * * *'
   workflow_dispatch:
 
 jobs:
