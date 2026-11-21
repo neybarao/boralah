@@ -2,7 +2,7 @@ name: Atividade de madrugada no Supabase
 
 # Todo dia por volta das 3h (horário de Campo Grande): cria e altera um
 # registro fictício, espera 30 minutos e apaga. Complementa o ping de leitura.
-# Requer o supabase/keepalive.sql aplicado no banco.
+# Requer o supabase/maintenance.sql aplicado no banco.
 on:
   schedule:
     - cron: '7 7 * * *'
