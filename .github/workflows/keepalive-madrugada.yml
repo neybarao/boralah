@@ -1,0 +1,33 @@
+name: Atividade de madrugada no Supabase
+
+# Todo dia por volta das 3h (horário de Campo Grande): cria e altera um
+# registro fictício, espera 30 minutos e apaga. Complementa o ping de leitura.
+# Requer o supabase/keepalive.sql aplicado no banco.
+on:
+  schedule:
+    - cron: '7 7 * * *'
+  workflow_dispatch:
+
+jobs:
+  criar-alterar-apagar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Carregar configuração
+        run: cat .env.production | grep '^VITE_SUPABASE_' >> "$GITHUB_ENV"
+      - name: Criar e alterar
+        run: |
+          curl --fail --silent --show-error -X POST \
+            -H "apikey: $VITE_SUPABASE_KEY" -H "Content-Type: application/json" \
+            -d '{"etapa":"criar"}' \
+            "$VITE_SUPABASE_URL/rest/v1/rpc/keepalive_tick"
+      - name: Esperar 30 minutos
+        run: sleep 1800
+      - name: Apagar
+        if: always()
+        run: |
+          curl --fail --silent --show-error -X POST \
+            -H "apikey: $VITE_SUPABASE_KEY" -H "Content-Type: application/json" \
+            -d '{"etapa":"apagar"}' \
+            "$VITE_SUPABASE_URL/rest/v1/rpc/keepalive_tick"
