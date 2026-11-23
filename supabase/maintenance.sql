@@ -37,7 +37,7 @@ begin
     update public.recycle set nota = 'registro fictício alterado', alterado_em = now() where id = novo_id;
     return 'criado e alterado: ' || novo_id;
   elsif etapa = 'apagar' then
-    delete from public.recycle;
+    delete from public.recycle where id is not null;
     return 'apagado';
   else
     raise exception 'etapa inválida: %', etapa;

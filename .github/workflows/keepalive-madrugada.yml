@@ -18,7 +18,7 @@ jobs:
         run: cat .env.production | grep '^VITE_SUPABASE_' >> "$GITHUB_ENV"
       - name: Criar e alterar
         run: |
-          curl --fail --silent --show-error -X POST \
+          curl --fail-with-body --silent --show-error -X POST \
             -H "apikey: $VITE_SUPABASE_KEY" -H "Content-Type: application/json" \
             -d '{"etapa":"criar"}' \
             "$VITE_SUPABASE_URL/rest/v1/rpc/run_recycle"
@@ -27,7 +27,7 @@ jobs:
       - name: Apagar
         if: always()
         run: |
-          curl --fail --silent --show-error -X POST \
+          curl --fail-with-body --silent --show-error -X POST \
             -H "apikey: $VITE_SUPABASE_KEY" -H "Content-Type: application/json" \
             -d '{"etapa":"apagar"}' \
             "$VITE_SUPABASE_URL/rest/v1/rpc/run_recycle"
