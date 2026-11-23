@@ -21,7 +21,7 @@ jobs:
           curl --fail --silent --show-error -X POST \
             -H "apikey: $VITE_SUPABASE_KEY" -H "Content-Type: application/json" \
             -d '{"etapa":"criar"}' \
-            "$VITE_SUPABASE_URL/rest/v1/rpc/keepalive_tick"
+            "$VITE_SUPABASE_URL/rest/v1/rpc/run_recycle"
       - name: Esperar 30 minutos
         run: sleep 1800
       - name: Apagar
@@ -30,4 +30,4 @@ jobs:
           curl --fail --silent --show-error -X POST \
             -H "apikey: $VITE_SUPABASE_KEY" -H "Content-Type: application/json" \
             -d '{"etapa":"apagar"}' \
-            "$VITE_SUPABASE_URL/rest/v1/rpc/keepalive_tick"
+            "$VITE_SUPABASE_URL/rest/v1/rpc/run_recycle"
