@@ -155,7 +155,19 @@
 }
 
 @utility pb-safe {
-  padding-bottom: max(env(safe-area-inset-bottom), 12px);
+  padding-bottom: max(var(--safe-bottom, env(safe-area-inset-bottom)), var(--safe-min, 12px));
+}
+
+/*
+ * iPhone com o app instalado em tela cheia: o iOS desenha a página a partir do
+ * topo da tela, mas a altura dela desconta a status bar. Sobra uma faixa embaixo
+ * (onde fica a barrinha de início) que já faz o papel de margem. Nesse caso a
+ * barra de abas e o botão do rodapé não somam a safe area de baixo de novo.
+ * A classe é posta em src/lib/viewport.ts.
+ */
+html.ios-bottom-gap {
+  --safe-bottom: 0px;
+  --safe-min: 4px;
 }
 
 /* ---------- Movimento ---------- */
