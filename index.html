@@ -2,6 +2,14 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      // Sempre em HTTPS. Aberto por http://, o iPhone instala o app como "site não seguro":
+      // aparece a barra do Safari, o service worker não roda (sem atualização automática)
+      // e a foto não vai por trás da status bar.
+      if (location.protocol === 'http:' && !/^(localhost|127\.|192\.168\.)/.test(location.hostname)) {
+        location.replace('https://' + location.host + location.pathname + location.search + location.hash)
+      }
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#C8361F" />
     <!-- iOS: o conteúdo vai por trás da status bar (cada tela reserva o espaço com safe-area-inset-top) -->
