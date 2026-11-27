@@ -1,5 +1,7 @@
 import { Link } from 'react-router'
 import { BottomNav, Screen } from '@/components/layout'
+import { PullToRefresh } from '@/components/pull-to-refresh'
+import { checkForUpdate } from '@/lib/sw-update'
 import { Button } from '@/components/ui/button'
 import { backend } from '@/lib/data'
 import { isDemo } from '@/lib/supabase'
@@ -7,10 +9,11 @@ import { useStore } from '@/lib/store'
 import { formatDate, formatRating } from '@/lib/utils'
 
 export default function Visits() {
-  const { visits, getPlace, isAdmin } = useStore()
+  const { visits, getPlace, isAdmin, refresh } = useStore()
 
   return (
     <Screen className="pb-28">
+      <PullToRefresh onRefresh={() => Promise.all([refresh(), checkForUpdate()])} />
       <header className="px-5 pt-5 pb-2">
         <h1 className="text-[22px] font-extrabold tracking-tight">Nossas visitas</h1>
         <p className="text-sm font-medium text-muted-foreground">

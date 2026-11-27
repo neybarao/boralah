@@ -2,13 +2,14 @@ import { RefreshCw, X } from 'lucide-react'
 import { createPortal } from 'react-dom'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 import { Button } from '@/components/ui/button'
+import { checkForUpdate, setRegistration } from '@/lib/sw-update'
 
 /** De quanto em quanto tempo procurar versão nova com o app aberto */
-const CHECK_EVERY_MS = 60 * 60 * 1000
+const CHECK_EVERY_MS = 15 * 60 * 1000
 
 /**
  * Aviso de nova versão. O app procura atualização ao abrir, ao voltar para a
- * tela e a cada hora. Quando acha, mostra o aviso e só recarrega se a pessoa
+ * tela, ao voltar a internet, a cada 15 minutos e ao puxar a tela para baixo. Quando acha, mostra o aviso e só recarrega se a pessoa
  * tocar em "Atualizar", para não perder um formulário pela metade.
  */
 export function UpdatePrompt() {
@@ -18,12 +19,12 @@ export function UpdatePrompt() {
   } = useRegisterSW({
     onRegisteredSW(_url, registration) {
       if (!registration) return
-      const check = () => {
-        if (navigator.onLine) void registration.update().catch(() => {})
-      }
+      setRegistration(registration)
+      const check = () => void checkForUpdate()
       document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') check()
       })
+      window.addEventListener('online', check)
       setInterval(check, CHECK_EVERY_MS)
     },
   })

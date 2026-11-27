@@ -152,11 +152,6 @@ export default function PlaceForm() {
         </fieldset>
 
         <Label>
-          Bairro
-          <Input value={form.neighborhood ?? ''} onChange={(e) => set('neighborhood', text(e.target.value))} />
-        </Label>
-
-        <Label>
           Link do Google Maps
           <Input
             type="url"
@@ -164,13 +159,6 @@ export default function PlaceForm() {
             value={form.maps_url ?? ''}
             onChange={(e) => set('maps_url', text(e.target.value))}
           />
-        </Label>
-
-        <Label>
-          <span>
-            Instagram <span className="font-medium text-muted-foreground">(opcional)</span>
-          </span>
-          <Input placeholder="@perfil" value={form.instagram ?? ''} onChange={(e) => set('instagram', text(e.target.value))} />
         </Label>
 
         <section className="flex flex-col gap-4 rounded-xl bg-kids-surface p-4">

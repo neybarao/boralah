@@ -69,8 +69,46 @@ test('registrar visita', async ({ page }) => {
 test('cadastrar lugar novo', async ({ page }) => {
   await page.goto('./')
   await page.getByRole('link', { name: 'Cadastrar novo lugar' }).click()
+  // Bairro e Instagram saíram do cadastro
+  await expect(page.getByText('Bairro', { exact: true })).toHaveCount(0)
+  await expect(page.getByPlaceholder('@perfil')).toHaveCount(0)
   await page.getByPlaceholder('Ex.: Cantina da esquina').fill('Lugar de Teste')
   await page.getByRole('button', { name: 'Salvar lugar' }).click()
   await expect(page.getByRole('status')).toHaveText('Lugar cadastrado')
   await expect(page.getByRole('heading', { name: 'Lugar de Teste', level: 1 })).toBeVisible()
+})
+
+test('puxar a tela para baixo atualiza', async ({ page }) => {
+  await page.goto('./')
+  await expect(page.getByRole('heading', { name: 'Onde comer hoje?' })).toBeVisible()
+  // Simula o dedo arrastando 200px para baixo com a página no topo
+  await page.evaluate(async () => {
+    const touch = (y: number) => [new Touch({ identifier: 1, target: document.body, clientX: 200, clientY: y })]
+    const fire = (type: string, y: number) =>
+      document.dispatchEvent(
+        new TouchEvent(type, {
+          touches: type === 'touchend' ? [] : touch(y),
+          changedTouches: touch(y),
+          bubbles: true,
+          cancelable: true,
+        }),
+      )
+    fire('touchstart', 100)
+    for (let y = 120; y <= 300; y += 20) {
+      fire('touchmove', y)
+      await new Promise((r) => requestAnimationFrame(r))
+    }
+    fire('touchend', 300)
+  })
+  await expect(page.getByRole('status', { name: 'Atualizando' })).toBeVisible()
+  await expect(page.getByRole('status', { name: 'Atualizando' })).toHaveCount(0, { timeout: 5_000 })
+  await expect(page.getByRole('link', { name: /Sobá do Jardim/ }).first()).toBeVisible()
+})
+
+test('foto do lugar vai até o topo da tela', async ({ page }) => {
+  await page.goto('./#/lugar/demo-nonna')
+  const hero = page.locator('.animate-hero').first()
+  await expect(hero).toBeVisible()
+  // Depois da animação de entrada, a foto começa no topo (sem faixa acima dela)
+  await expect.poll(async () => Math.round((await hero.boundingBox())?.y ?? -1)).toBe(0)
 })

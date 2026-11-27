@@ -10,7 +10,16 @@ type NavState = { tab?: boolean; back?: boolean; toast?: string } | null
  * Coluna central com largura de celular. Cada tela entra com uma animação:
  * desliza da direita ao avançar, da esquerda ao voltar e só aparece entre abas.
  */
-export function Screen({ children, className }: { children: ReactNode; className?: string }) {
+export function Screen({
+  children,
+  className,
+  bleed = false,
+}: {
+  children: ReactNode
+  className?: string
+  /** Se true, o conteúdo começa no topo da tela, por trás da status bar (ex.: foto de capa). */
+  bleed?: boolean
+}) {
   const navType = useNavigationType()
   const state = useLocation().state as NavState
   const anim = state?.tab
@@ -18,7 +27,14 @@ export function Screen({ children, className }: { children: ReactNode; className
     : navType === 'POP' || state?.back
       ? 'animate-page-back'
       : 'animate-page-forward'
-  return <div className={cn('mx-auto min-h-dvh w-full max-w-md bg-background', anim, className)}>{children}</div>
+  return (
+    <div
+      className={cn('mx-auto min-h-dvh w-full max-w-md bg-background', anim, className)}
+      style={bleed ? undefined : { paddingTop: 'env(safe-area-inset-top)' }}
+    >
+      {children}
+    </div>
+  )
 }
 
 /**

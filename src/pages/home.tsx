@@ -3,6 +3,8 @@ import { useMemo } from 'react'
 import type React from 'react'
 import { Link } from 'react-router'
 import { BottomNav, Screen } from '@/components/layout'
+import { PullToRefresh } from '@/components/pull-to-refresh'
+import { checkForUpdate } from '@/lib/sw-update'
 import { PlaceRow } from '@/components/place-row'
 import { PlaceThumb } from '@/components/place-thumb'
 import { Button } from '@/components/ui/button'
@@ -16,7 +18,7 @@ import { applyFilters, daysSince, DEFAULT_FILTERS, timeAgo } from '@/lib/utils'
 const STALE_DAYS = 45
 
 export default function Home() {
-  const { places, loading, error, isAdmin, filters, setFilters } = useStore()
+  const { places, loading, error, isAdmin, filters, setFilters, refresh } = useStore()
   const { theme, toggle } = useTheme()
   const list = useMemo(() => applyFilters(places, filters), [places, filters])
   const stale = useMemo(
@@ -30,6 +32,7 @@ export default function Home() {
 
   return (
     <Screen className="pb-28">
+      <PullToRefresh onRefresh={() => Promise.all([refresh(), checkForUpdate()])} />
       {isDemo && (
         <p className="bg-notice px-5 py-2 text-center text-xs font-semibold text-notice-foreground">
           Modo demonstração: dados fictícios salvos só neste aparelho

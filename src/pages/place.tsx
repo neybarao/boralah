@@ -37,18 +37,18 @@ export default function PlacePage() {
   const handle = place.instagram?.replace(/^@/, '').trim()
 
   return (
-    <Screen className="pb-32">
+    <Screen bleed className="pb-32">
       <div className="relative overflow-hidden">
         {place.photos.length > 1 ? (
-          <div className="no-scrollbar animate-hero flex h-65 snap-x snap-mandatory overflow-x-auto">
+          <div className="no-scrollbar animate-hero flex h-[calc(16.25rem+env(safe-area-inset-top))] snap-x snap-mandatory overflow-x-auto">
             {place.photos.map((src) => (
-              <img key={src} src={src} alt="" className="h-65 w-full shrink-0 snap-center object-cover" />
+              <img key={src} src={src} alt="" className="h-[calc(16.25rem+env(safe-area-inset-top))] w-full shrink-0 snap-center object-cover" />
             ))}
           </div>
         ) : (
-          <PlaceThumb place={place} className="animate-hero h-65 w-full" iconSize={48} />
+          <PlaceThumb place={place} className="animate-hero h-[calc(16.25rem+env(safe-area-inset-top))] w-full" iconSize={48} />
         )}
-        <div className="absolute inset-x-5 top-5 flex justify-between">
+        <div className="absolute inset-x-5 top-[calc(env(safe-area-inset-top)+1.25rem)] flex justify-between">
           <BackButton to="/" />
           {isAdmin && (
             <Button asChild variant="muted" size="icon" aria-label="Editar lugar" className="bg-background hover:bg-background/90">
