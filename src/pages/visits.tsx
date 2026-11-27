@@ -12,7 +12,7 @@ export default function Visits() {
   const { visits, getPlace, isAdmin, refresh } = useStore()
 
   return (
-    <Screen className="pb-28">
+    <Screen className="pb-32">
       <PullToRefresh onRefresh={() => Promise.all([refresh(), checkForUpdate({ wait: true })])} />
       <header className="px-5 pt-[calc(1.25rem+env(safe-area-inset-top))] pb-2">
         <h1 className="text-[22px] font-extrabold tracking-tight">Nossas visitas</h1>

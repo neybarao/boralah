@@ -55,7 +55,7 @@ export default function Home() {
   }, [list])
 
   return (
-    <Screen className="pb-28">
+    <Screen className="pb-32">
       <PullToRefresh onRefresh={() => Promise.all([refresh(), checkForUpdate({ wait: true })])} />
       {isDemo && (
         <p className="bg-notice px-5 pt-[calc(0.5rem+env(safe-area-inset-top))] pb-2 text-center text-xs font-semibold text-notice-foreground">

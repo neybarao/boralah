@@ -1,7 +1,8 @@
 import { Bookmark, ChevronLeft, Dices, House, X } from 'lucide-react'
-import { useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, NavLink, useLocation, useNavigate, useNavigationType } from 'react-router'
+import { Flip, gsap, reducedMotion } from '@/lib/motion'
 import { scroller } from '@/lib/scroller'
 import { cn } from '@/lib/utils'
 
@@ -131,40 +132,79 @@ const tabs = [
   { to: '/visitas', label: 'Visitas', Icon: Bookmark, end: false },
 ]
 
+// Posição dos botões da barra antes de trocar de aba: a barra nova parte dela
+let navState: Flip.FlipState | null = null
+
+/**
+ * Barra de abas em pílula, flutuando sobre o conteúdo. A aba ativa vira uma
+ * pílula escura com o nome; as outras são botões redondos com borda.
+ * Ao trocar de aba, os botões deslizam e mudam de tamanho até a posição nova.
+ */
 export function BottomNav() {
+  const ref = useRef<HTMLDivElement>(null)
+
+  useLayoutEffect(() => {
+    const state = navState
+    navState = null
+    if (!state || !ref.current || reducedMotion()) return
+    Flip.from(state, {
+      targets: ref.current.querySelectorAll('[data-flip-id]'),
+      duration: 0.5,
+      ease: 'power3.out',
+    })
+    gsap.fromTo(
+      ref.current.querySelectorAll('[data-tab-label]'),
+      { opacity: 0, x: -6 },
+      { opacity: 1, x: 0, duration: 0.35, delay: 0.15, ease: 'power2.out' },
+    )
+  }, [])
+
+  const remember = () => {
+    if (ref.current) navState = Flip.getState(ref.current.querySelectorAll('[data-flip-id]'))
+  }
+
   return (
     <Fixed>
-    <nav
-      aria-label="Navegação principal"
-      className="pb-safe fixed inset-x-0 bottom-0 z-10 mx-auto grid w-full max-w-md grid-cols-3 border-t border-line bg-background pt-2"
-    >
-      {tabs.map(({ to, label, Icon, end }) => (
-        <NavLink
-          key={to}
-          to={to}
-          end={end}
-          state={{ tab: true }}
-          className={({ isActive }) =>
-            cn(
-              'flex h-12 flex-col items-center justify-center gap-1 text-xs outline-none focus-visible:bg-muted',
-              isActive ? 'font-bold text-foreground' : 'font-semibold text-muted-foreground',
-            )
-          }
+      <nav
+        aria-label="Navegação principal"
+        className="pb-safe pointer-events-none fixed inset-x-0 bottom-0 z-10 mx-auto flex w-full max-w-md justify-center bg-gradient-to-t from-background via-background/80 to-transparent pt-6"
+      >
+        <div
+          ref={ref}
+          className="pointer-events-auto mb-2 flex items-center gap-1.5 rounded-full border border-line bg-background/90 p-1.5 shadow-[0_12px_32px_-12px_var(--shadow-color)] backdrop-blur-xl"
         >
-          {({ isActive }) => (
-            <>
-              <Icon
-                key={String(isActive)}
-                size={24}
-                strokeWidth={isActive ? 2.2 : 1.8}
-                className={cn('transition-transform duration-150 active:scale-90', isActive && 'animate-pop')}
-              />
-              {label}
-            </>
-          )}
-        </NavLink>
-      ))}
-    </nav>
+          {tabs.map(({ to, label, Icon, end }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={end}
+              state={{ tab: true }}
+              aria-label={label}
+              onClick={remember}
+              data-flip-id={to}
+              className={({ isActive }) =>
+                cn(
+                  'flex h-13 items-center justify-center gap-2 rounded-full border outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                  isActive
+                    ? 'border-foreground bg-foreground pr-5 pl-4 text-background'
+                    : 'w-13 border-line bg-background text-foreground',
+                )
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <Icon size={21} strokeWidth={isActive ? 2.2 : 1.8} aria-hidden="true" className="shrink-0" />
+                  {isActive && (
+                    <span data-tab-label className="text-sm font-bold whitespace-nowrap">
+                      {label}
+                    </span>
+                  )}
+                </>
+              )}
+            </NavLink>
+          ))}
+        </div>
+      </nav>
     </Fixed>
   )
 }

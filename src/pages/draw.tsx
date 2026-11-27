@@ -78,7 +78,7 @@ export default function Draw() {
   ].filter(Boolean) as string[]
 
   return (
-    <Screen className="flex flex-col pb-24">
+    <Screen className="flex flex-col pb-32">
       <TopBar title="Decide pra mim" back={<BackButton to="/" />} />
 
       <div className="flex flex-wrap items-center gap-1.5 px-5 pt-2">
