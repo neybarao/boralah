@@ -16,7 +16,8 @@ export function ScreenDiag() {
     const mode = ['fullscreen', 'standalone', 'minimal-ui', 'browser'].find(
       (m) => window.matchMedia(`(display-mode: ${m})`).matches,
     )
-    setInfo(`modo ${mode ?? '?'} · topo ${top}px · altura ${window.innerHeight}/${window.screen.height}`)
+    const gap = document.documentElement.classList.contains('ios-bottom-gap') ? ' · ajuste rodapé ligado' : ''
+    setInfo(`modo ${mode ?? '?'} · topo ${top}px · altura ${window.innerHeight}/${window.screen.height}${gap}`)
   }, [])
   return <>{info}</>
 }
