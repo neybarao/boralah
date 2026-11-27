@@ -82,7 +82,7 @@ export default function PlacePage() {
   const today = new Date().getDay()
 
   return (
-    <Screen bleed className="pb-32">
+    <Screen className="pb-32">
       {/* Corta só embaixo e dos lados: no quique do topo a foto pode crescer para cima */}
       <div className="relative [clip-path:inset(-100vh_0_0_0)]">
         <div ref={heroRef} className="will-change-transform">

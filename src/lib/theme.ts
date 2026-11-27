@@ -9,7 +9,7 @@ import { useCallback, useEffect, useSyncExternalStore } from 'react'
 export type Theme = 'light' | 'dark'
 
 const KEY = 'boralah-theme'
-const META_COLOR: Record<Theme, string> = { light: '#C8361F', dark: '#16120F' }
+const META_COLOR: Record<Theme, string> = { light: '#FFFFFF', dark: '#16120F' }
 const media = () => window.matchMedia('(prefers-color-scheme: dark)')
 
 function readStored(): Theme | null {

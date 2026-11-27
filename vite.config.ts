@@ -30,13 +30,12 @@ export default defineConfig({
         id: BASE,
         start_url: BASE,
         scope: BASE,
-        // standalone: abre como app (sem barra de endereço). Com display "fullscreen"
-        // o iPhone abriu o BoraLah como site do Safari, então voltamos para standalone.
-        // O conteúdo por trás da status bar vem do meta black-translucent no index.html.
-        display: 'standalone',
+        // Tela cheia: o fundo vai por trás da status bar no app instalado
+        display: 'fullscreen',
+        display_override: ['fullscreen', 'standalone'],
         orientation: 'portrait',
         background_color: '#FFFFFF',
-        theme_color: '#C8361F',
+        theme_color: '#FFFFFF',
         icons: [
           { src: 'pwa-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'pwa-512.png', sizes: '512x512', type: 'image/png' },

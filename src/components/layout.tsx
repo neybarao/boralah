@@ -11,16 +11,11 @@ type NavState = { tab?: boolean; back?: boolean; toast?: string } | null
  * Coluna central com largura de celular. Cada tela entra com uma animação:
  * desliza da direita ao avançar, da esquerda ao voltar e só aparece entre abas.
  */
-export function Screen({
-  children,
-  className,
-  bleed = false,
-}: {
-  children: ReactNode
-  className?: string
-  /** Se true, o conteúdo começa no topo da tela, por trás da status bar (ex.: foto de capa). */
-  bleed?: boolean
-}) {
+/**
+ * O fundo vai até a borda, por trás da status bar: o container não tem
+ * espaço de safe area. Quem desloca é o header de cada tela.
+ */
+export function Screen({ children, className }: { children: ReactNode; className?: string }) {
   const navType = useNavigationType()
   const state = useLocation().state as NavState
   const anim = state?.tab
@@ -29,12 +24,7 @@ export function Screen({
       ? 'animate-page-back'
       : 'animate-page-forward'
   return (
-    <div
-      className={cn('mx-auto min-h-dvh w-full max-w-md bg-background', anim, className)}
-      style={bleed ? undefined : { paddingTop: 'env(safe-area-inset-top)' }}
-    >
-      {children}
-    </div>
+    <div className={cn('mx-auto min-h-dvh w-full max-w-md bg-background', anim, className)}>{children}</div>
   )
 }
 
@@ -114,7 +104,7 @@ export function BackButton({ to, close = false, label }: { to?: string; close?: 
 
 export function TopBar({ title, subtitle, back }: { title: string; subtitle?: string; back: ReactNode }) {
   return (
-    <header className="flex items-center gap-3 px-5 pt-5 pb-2">
+    <header className="flex items-center gap-3 px-5 pt-[calc(1.25rem+env(safe-area-inset-top))] pb-2">
       {back}
       <div className="flex min-w-0 flex-col">
         <h1 className="truncate text-lg font-extrabold">{title}</h1>

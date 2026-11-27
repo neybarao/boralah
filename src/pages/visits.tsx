@@ -14,7 +14,7 @@ export default function Visits() {
   return (
     <Screen className="pb-28">
       <PullToRefresh onRefresh={() => Promise.all([refresh(), checkForUpdate({ wait: true })])} />
-      <header className="px-5 pt-5 pb-2">
+      <header className="px-5 pt-[calc(1.25rem+env(safe-area-inset-top))] pb-2">
         <h1 className="text-[22px] font-extrabold tracking-tight">Nossas visitas</h1>
         <p className="text-sm font-medium text-muted-foreground">
           {visits.length === 1 ? '1 visita registrada' : `${visits.length} visitas registradas`}

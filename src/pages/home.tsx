@@ -16,7 +16,7 @@ import { Flip, gsap, reducedMotion } from '@/lib/motion'
 import { useStore } from '@/lib/store'
 import { useTheme } from '@/lib/theme'
 import { CATEGORIES } from '@/lib/types'
-import { applyFilters, daysSince, DEFAULT_FILTERS, timeAgo } from '@/lib/utils'
+import { applyFilters, cn, daysSince, DEFAULT_FILTERS, timeAgo } from '@/lib/utils'
 
 const STALE_DAYS = 45
 
@@ -58,12 +58,14 @@ export default function Home() {
     <Screen className="pb-28">
       <PullToRefresh onRefresh={() => Promise.all([refresh(), checkForUpdate({ wait: true })])} />
       {isDemo && (
-        <p className="bg-notice px-5 py-2 text-center text-xs font-semibold text-notice-foreground">
+        <p className="bg-notice px-5 pt-[calc(0.5rem+env(safe-area-inset-top))] pb-2 text-center text-xs font-semibold text-notice-foreground">
           Modo demonstração: dados fictícios salvos só neste aparelho
         </p>
       )}
 
-      <header className="flex items-center justify-between gap-3 px-5 pt-5 pb-2">
+      <header
+        className={cn('flex items-center justify-between gap-3 px-5 pb-2', isDemo ? 'pt-5' : 'pt-[calc(1.25rem+env(safe-area-inset-top))]')}
+      >
         <div className="flex flex-col gap-0.5">
           <span className="text-xs font-semibold text-muted-foreground">BoraLah</span>
           <h1 className="text-[22px] font-extrabold tracking-tight">Onde comer hoje?</h1>
