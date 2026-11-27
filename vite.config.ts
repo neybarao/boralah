@@ -30,11 +30,10 @@ export default defineConfig({
         id: BASE,
         start_url: BASE,
         scope: BASE,
-        // fullscreen: no iPhone, o conteúdo desenha por trás da status bar.
-        // Mesmo esquema do app Raul's World, que funciona no iOS atual. Navegadores
-        // sem fullscreen caem em standalone (barra do sistema, sem barra de endereço).
-        display: 'fullscreen',
-        display_override: ['fullscreen', 'standalone'],
+        // standalone: abre como app (sem barra de endereço). Com display "fullscreen"
+        // o iPhone abriu o BoraLah como site do Safari, então voltamos para standalone.
+        // O conteúdo por trás da status bar vem do meta black-translucent no index.html.
+        display: 'standalone',
         orientation: 'portrait',
         background_color: '#FFFFFF',
         theme_color: '#C8361F',
