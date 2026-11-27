@@ -124,19 +124,10 @@
     /* Sem zoom por toque duplo */
     touch-action: manipulation;
   }
-  /* A página não rola: quem rola é o #root (veja src/lib/scroller.ts) */
-  html,
+  /* Como no Dia: a página rola normalmente; o puxar para atualizar é do app */
   body {
-    height: 100%;
-    overflow: hidden;
-    overscroll-behavior: none;
-  }
-  #root {
-    position: fixed;
-    inset: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    min-height: 100dvh;
+    overscroll-behavior-y: contain;
   }
   body {
     background: var(--color-background);

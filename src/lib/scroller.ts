@@ -1,6 +1,7 @@
 /**
- * O app rola dentro do #root (fixo, ocupando a tela toda), não na página.
- * É o mesmo esquema do Raul's World: assim o iPhone deixa o conteúdo
- * desenhar por trás da status bar no app instalado.
+ * Quem rola o app: a própria página, como no Dia (home-org).
+ * scroller() dá o elemento (para ler e mudar scrollTop) e scrollEvents()
+ * onde escutar o evento de rolagem.
  */
-export const scroller = () => document.getElementById('root') as HTMLElement
+export const scroller = () => (document.scrollingElement ?? document.documentElement) as HTMLElement
+export const scrollEvents = (): Window => window

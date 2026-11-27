@@ -9,7 +9,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { backend } from '@/lib/data'
 import { gsap, reducedMotion } from '@/lib/motion'
-import { scroller } from '@/lib/scroller'
+import { applyTopTint, topColor } from '@/lib/photo-tint'
+import { scrollEvents, scroller } from '@/lib/scroller'
 import { useStore } from '@/lib/store'
 import { formatDay } from '@/lib/hours'
 import { KIDS_MONITOR, KIDS_SIZES, WEEKDAYS, type BabyLiked, type WouldReturn, type YesNoUnknown } from '@/lib/types'
@@ -59,7 +60,7 @@ function useHeroParallax(ready: boolean) {
       if (!frame) frame = requestAnimationFrame(update)
     }
     gsap.set(el, { transformOrigin: '50% 100%' })
-    const box = scroller()
+    const box = scrollEvents()
     box.addEventListener('scroll', onScroll, { passive: true })
     return () => {
       box.removeEventListener('scroll', onScroll)
@@ -69,11 +70,28 @@ function useHeroParallax(ready: boolean) {
   return ref
 }
 
+/** Área da status bar com a cor do topo da foto de capa, enquanto a tela está aberta */
+function useStatusBarTint(photo: string | undefined) {
+  useEffect(() => {
+    if (!photo) return
+    let undo: (() => void) | undefined
+    let alive = true
+    void topColor(photo).then((c) => {
+      if (alive && c) undo = applyTopTint(c)
+    })
+    return () => {
+      alive = false
+      undo?.()
+    }
+  }, [photo])
+}
+
 export default function PlacePage() {
   const { id } = useParams()
   const { getPlace, visits, isAdmin, refresh } = useStore()
   const place = getPlace(id)
   const heroRef = useHeroParallax(!!place)
+  useStatusBarTint(place?.photos[0])
   if (!place) return <NotFound />
 
   const mine = visits.filter((v) => v.place_id === place.id)
