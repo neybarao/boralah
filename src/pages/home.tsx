@@ -6,6 +6,7 @@ import { BottomNav, Screen } from '@/components/layout'
 import { PullToRefresh } from '@/components/pull-to-refresh'
 import { BUILD_TIME, checkForUpdate } from '@/lib/sw-update'
 import { AnimatedNumber } from '@/components/animated-number'
+import { ScreenDiag } from '@/components/screen-diag'
 import { PlaceRow } from '@/components/place-row'
 import { PlaceThumb } from '@/components/place-thumb'
 import { Button } from '@/components/ui/button'
@@ -227,6 +228,8 @@ export default function Home() {
       <p className="px-5 pt-8 text-center text-[11px] font-medium text-muted-foreground">
         Versão de{' '}
         {BUILD_TIME.toLocaleString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+        <br />
+        <ScreenDiag />
       </p>
 
       <BottomNav />
