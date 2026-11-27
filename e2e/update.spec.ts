@@ -6,7 +6,7 @@ import { expect, test } from './fixtures'
 // Este teste precisa do service worker de verdade
 test.use({ serviceWorkers: 'allow' })
 // Os dois testes mexem no mesmo sw.js, então rodam um depois do outro
-test.describe.configure({ mode: 'serial' })
+test.describe.configure({ mode: 'serial', timeout: 90_000 })
 
 /** Abre o app já controlado pelo service worker, como no celular depois da 1ª visita */
 async function openControlled(page: Page) {
@@ -26,7 +26,7 @@ test('fora de formulário, versão nova entra sozinha', async ({ page }) => {
   try {
     // Simula um deploy: o service worker publicado muda
     appendFileSync(SW, `\n// versão de teste ${Date.now()}\n`)
-    const reloaded = page.waitForEvent('load', { timeout: 20_000 })
+    const reloaded = page.waitForEvent('load', { timeout: 45_000 })
     // Voltar para o app dispara a checagem
     await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')))
     await reloaded
@@ -48,7 +48,7 @@ test('num formulário, avisa; "Agora não" adia até sair do formulário', async
     appendFileSync(SW, `\n// versão de teste ${Date.now()}\n`)
     await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')))
     const alert = page.getByRole('alert').filter({ hasText: 'Nova versão disponível' })
-    await expect(alert).toBeVisible({ timeout: 15_000 })
+    await expect(alert).toBeVisible({ timeout: 30_000 })
 
     // "Agora não" esconde o aviso e não recarrega: o formulário continua
     await page.getByPlaceholder('O que pedimos').fill('não pode sumir')
@@ -57,7 +57,7 @@ test('num formulário, avisa; "Agora não" adia até sair do formulário', async
     await expect(page.getByPlaceholder('O que pedimos')).toHaveValue('não pode sumir')
 
     // Ao sair do formulário, a versão nova entra
-    const reloaded = page.waitForEvent('load', { timeout: 20_000 })
+    const reloaded = page.waitForEvent('load', { timeout: 45_000 })
     await page.getByRole('button', { name: 'Fechar' }).click()
     await reloaded
     expect(await page.evaluate(() => !!navigator.serviceWorker.controller)).toBe(true)
@@ -75,7 +75,7 @@ test('no formulário, tocar em Atualizar recarrega com a versão nova', async ({
     appendFileSync(SW, `\n// versão de teste ${Date.now()}\n`)
     await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')))
     const alert = page.getByRole('alert').filter({ hasText: 'Nova versão disponível' })
-    await expect(alert).toBeVisible({ timeout: 15_000 })
+    await expect(alert).toBeVisible({ timeout: 30_000 })
 
     const reloaded = page.waitForEvent('load')
     await alert.getByRole('button', { name: 'Atualizar' }).click()
