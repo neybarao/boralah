@@ -10,6 +10,8 @@ const BASE = '/boralah/'
 
 export default defineConfig({
   base: BASE,
+  // Hora do build: aparece no rodapé do Início para saber qual versão está aberta
+  define: { __BUILD_TIME__: JSON.stringify(new Date().toISOString()) },
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },

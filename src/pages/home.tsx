@@ -4,7 +4,7 @@ import type React from 'react'
 import { Link } from 'react-router'
 import { BottomNav, Screen } from '@/components/layout'
 import { PullToRefresh } from '@/components/pull-to-refresh'
-import { checkForUpdate } from '@/lib/sw-update'
+import { BUILD_TIME, checkForUpdate } from '@/lib/sw-update'
 import { AnimatedNumber } from '@/components/animated-number'
 import { PlaceRow } from '@/components/place-row'
 import { PlaceThumb } from '@/components/place-thumb'
@@ -55,7 +55,7 @@ export default function Home() {
 
   return (
     <Screen className="pb-28">
-      <PullToRefresh onRefresh={() => Promise.all([refresh(), checkForUpdate()])} />
+      <PullToRefresh onRefresh={() => Promise.all([refresh(), checkForUpdate({ wait: true })])} />
       {isDemo && (
         <p className="bg-notice px-5 py-2 text-center text-xs font-semibold text-notice-foreground">
           Modo demonstração: dados fictícios salvos só neste aparelho
@@ -223,6 +223,11 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      <p className="px-5 pt-8 text-center text-[11px] font-medium text-muted-foreground">
+        Versão de{' '}
+        {BUILD_TIME.toLocaleString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+      </p>
 
       <BottomNav />
     </Screen>
