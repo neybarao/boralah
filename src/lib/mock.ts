@@ -8,17 +8,27 @@ const base = {
   instagram: null,
   photos: [],
   notes: null,
+  kids_space: true,
+  kids_monitor: 'nao_sei',
+  kids_size: null,
+  opening_hours: null,
   created_at: now,
 } satisfies Partial<Place>
 
+// Ter a dom, 11h às 23h (fechado na segunda)
+const H = { open: '11:00', close: '23:00' }
+const WEEK = [H, null, H, H, H, H, H]
+// Aberto todos os dias, 0h às 23h59: garante "Aberto agora" nos testes
+const ALWAYS = Array(7).fill({ open: '00:00', close: '23:59' })
+
 export const MOCK_PLACES: Place[] = [
-  { ...base, id: 'demo-soba', name: 'Sobá do Jardim', category: 'Regional', price_level: 1, neighborhood: 'Jardim dos Estados', kids_space: true, kids_types: ['Parquinho'], kids_age: '1 a 3 anos', high_chair: 'sim', changing_table: 'nao_sei' },
-  { ...base, id: 'demo-nonna', name: 'Cantina Nonna Tereza', category: 'Italiana', price_level: 2, neighborhood: 'Centro', kids_space: true, kids_types: ['Brinquedoteca'], kids_age: null, high_chair: 'sim', changing_table: 'sim' },
-  { ...base, id: 'demo-grelha', name: 'Grelha Pantanal', category: 'Carnes', price_level: 3, neighborhood: 'Carandá Bosque', kids_space: true, kids_types: ['Monitores', 'Brinquedoteca'], kids_age: null, high_chair: 'sim', changing_table: 'sim' },
-  { ...base, id: 'demo-forno', name: 'Forno Vivo Pizzaria', category: 'Pizza', price_level: 2, neighborhood: 'Tiradentes', kids_space: true, kids_types: ['Parquinho'], kids_age: null, high_chair: 'nao_sei', changing_table: 'nao_sei' },
-  { ...base, id: 'demo-hashi', name: 'Hashi Bistrô', category: 'Japonesa', price_level: 3, neighborhood: 'Chácara Cachoeira', kids_space: false, kids_types: [], kids_age: null, high_chair: 'sim', changing_table: 'nao' },
-  { ...base, id: 'demo-ipe', name: 'Lanchonete Ipê', category: 'Lanches', price_level: 1, neighborhood: 'Santa Fé', kids_space: true, kids_types: ['Cantinho kids'], kids_age: null, high_chair: 'sim', changing_table: 'nao' },
-  { ...base, id: 'demo-guavira', name: 'Casa Guavira', category: 'Regional', price_level: 2, neighborhood: 'Vilas Boas', kids_space: true, kids_types: ['Brinquedoteca'], kids_age: null, high_chair: 'sim', changing_table: 'sim' },
+  { ...base, id: 'demo-soba', name: 'Sobá do Jardim', category: 'Regional', price_level: 1, neighborhood: 'Jardim dos Estados', kids_types: ['Parquinho'], kids_age: '1 a 3 anos', kids_size: 'medio', kids_monitor: 'alguns_horarios', opening_hours: ALWAYS, high_chair: 'sim', changing_table: 'nao_sei' },
+  { ...base, id: 'demo-nonna', name: 'Cantina Nonna Tereza', category: 'Italiana', price_level: 2, neighborhood: 'Centro', kids_types: ['Brinquedoteca'], kids_age: null, high_chair: 'sim', changing_table: 'sim' },
+  { ...base, id: 'demo-grelha', name: 'Grelha Pantanal', category: 'Carnes', price_level: 3, neighborhood: 'Carandá Bosque', kids_types: ['Brinquedoteca', 'Pula-pula'], kids_size: 'grande', kids_monitor: 'sim', opening_hours: WEEK, kids_age: null, high_chair: 'sim', changing_table: 'sim' },
+  { ...base, id: 'demo-forno', name: 'Forno Vivo Pizzaria', category: 'Pizza', price_level: 2, neighborhood: 'Tiradentes', kids_types: ['Parquinho'], kids_age: null, high_chair: 'nao_sei', changing_table: 'nao_sei' },
+  { ...base, id: 'demo-hashi', name: 'Hashi Bistrô', category: 'Japonesa', price_level: 3, neighborhood: 'Chácara Cachoeira', kids_types: ['Cantinho kids'], kids_age: '2 a 6 anos', kids_size: 'pequeno', kids_monitor: 'nao', high_chair: 'sim', changing_table: 'nao' },
+  { ...base, id: 'demo-ipe', name: 'Lanchonete Ipê', category: 'Lanches', price_level: 1, neighborhood: 'Santa Fé', kids_types: ['Cantinho kids'], kids_age: null, high_chair: 'sim', changing_table: 'nao' },
+  { ...base, id: 'demo-guavira', name: 'Casa Guavira', category: 'Regional', price_level: 2, neighborhood: 'Vilas Boas', kids_types: ['Brinquedoteca'], kids_age: null, high_chair: 'sim', changing_table: 'sim' },
 ]
 
 const v = (id: string, place_id: string, visited_on: string, rating: number, notes: string | null = null): Visit => ({

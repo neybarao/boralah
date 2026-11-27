@@ -1,4 +1,4 @@
-import { Baby, Dices, LogIn, Moon, Plus, Search, Star, Sun } from 'lucide-react'
+import { Clock, Dices, LogIn, Moon, Plus, Search, Star, Sun } from 'lucide-react'
 import { useMemo } from 'react'
 import type React from 'react'
 import { Link } from 'react-router'
@@ -24,9 +24,9 @@ export default function Home() {
   const stale = useMemo(
     () =>
       places
-        .filter((p) => p.last_visit && daysSince(p.last_visit) >= STALE_DAYS && (!filters.kids || p.kids_space))
+        .filter((p) => p.last_visit && daysSince(p.last_visit) >= STALE_DAYS && p.kids_space)
         .sort((a, b) => a.last_visit!.localeCompare(b.last_visit!)),
-    [places, filters.kids],
+    [places],
   )
   const set = (patch: Partial<typeof filters>) => setFilters({ ...filters, ...patch })
 
@@ -43,6 +43,7 @@ export default function Home() {
         <div className="flex flex-col gap-0.5">
           <span className="text-xs font-semibold text-muted-foreground">BoraLah</span>
           <h1 className="text-[22px] font-extrabold tracking-tight">Onde comer hoje?</h1>
+          <span className="text-[13px] font-medium text-muted-foreground">Só lugares com espaço kids</span>
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -97,8 +98,8 @@ export default function Home() {
       </div>
 
       <div className="no-scrollbar flex gap-2 overflow-x-auto px-5 pt-2 pb-1">
-        <Chip active={filters.kids} onClick={() => set({ kids: !filters.kids })}>
-          <Baby size={16} aria-hidden="true" /> Espaço kids
+        <Chip active={filters.open} onClick={() => set({ open: !filters.open })}>
+          <Clock size={16} aria-hidden="true" /> Aberto agora
         </Chip>
         <Chip active={filters.never} onClick={() => set({ never: !filters.never })}>
           <Star size={16} aria-hidden="true" /> Nunca fomos
@@ -187,7 +188,7 @@ export default function Home() {
           <div className="animate-rise mt-4 flex flex-col items-start gap-1.5 rounded-lg bg-muted p-6">
             <span className="text-[15px] font-bold">Nenhum lugar com esses filtros</span>
             <span className="text-sm leading-snug text-muted-foreground">Tente tirar um filtro ou cadastre um lugar novo.</span>
-            <Button variant="outline" className="mt-2" onClick={() => setFilters({ ...DEFAULT_FILTERS, kids: false })}>
+            <Button variant="outline" className="mt-2" onClick={() => setFilters(DEFAULT_FILTERS)}>
               Limpar filtros
             </Button>
           </div>

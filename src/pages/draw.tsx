@@ -2,7 +2,7 @@ import { Dices } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { BackButton, BottomNav, Screen, TopBar } from '@/components/layout'
-import { placeMeta, VisitBadge } from '@/components/place-row'
+import { OpenBadge, placeMeta, VisitBadge } from '@/components/place-row'
 import { PlaceThumb } from '@/components/place-thumb'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -70,7 +70,7 @@ export default function Draw() {
   const place = pool[index % Math.max(pool.length, 1)]
 
   const active = [
-    filters.kids && 'Espaço kids',
+    filters.open && 'Aberto agora',
     filters.category !== 'Todos' ? filters.category : 'Todas as categorias',
     filters.never && 'Nunca fomos',
     filters.cheap && 'Até $$',
@@ -129,7 +129,8 @@ export default function Draw() {
                 </span>
                 <span className="text-sm font-medium text-muted-foreground">{placeMeta(place)}</span>
                 <div className={cn('flex flex-wrap gap-1.5 transition-opacity duration-150', rolling && 'opacity-0')}>
-                  {place.kids_space && <Badge variant="kids">{place.kids_types[0] ?? 'Espaço kids'}</Badge>}
+                  <OpenBadge place={place} />
+                  {place.kids_types[0] && <Badge variant="kids">{place.kids_types[0]}</Badge>}
                   <VisitBadge place={place} />
                 </div>
               </div>

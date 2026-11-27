@@ -2,6 +2,15 @@ export type PriceLevel = 1 | 2 | 3
 export type YesNoUnknown = 'sim' | 'nao' | 'nao_sei'
 export type BabyLiked = 'amou' | 'mais_ou_menos' | 'nao_curtiu'
 export type WouldReturn = 'sim' | 'talvez' | 'nao'
+export type KidsSize = 'pequeno' | 'medio' | 'grande'
+export type KidsMonitor = 'sim' | 'alguns_horarios' | 'nao' | 'nao_sei'
+/** Horário de um dia, "HH:MM". Se close <= open, fecha depois da meia-noite. */
+export interface DayHours {
+  open: string
+  close: string
+}
+/** 7 itens, domingo (0) a sábado (6); null = fechado nesse dia */
+export type OpeningHours = (DayHours | null)[]
 
 export interface Place {
   id: string
@@ -14,6 +23,10 @@ export interface Place {
   kids_space: boolean
   kids_types: string[]
   kids_age: string | null
+  kids_size: KidsSize | null
+  kids_monitor: KidsMonitor
+  /** null = horário não informado */
+  opening_hours: OpeningHours | null
   high_chair: YesNoUnknown
   changing_table: YesNoUnknown
   photos: string[]
@@ -45,4 +58,19 @@ export interface PlaceWithStats extends Place {
 }
 
 export const CATEGORIES = ['Regional', 'Lanches', 'Pizza', 'Japonesa', 'Italiana', 'Carnes', 'Outro'] as const
-export const KIDS_TYPES = ['Parquinho', 'Brinquedoteca', 'Monitores', 'Cantinho kids'] as const
+export const KIDS_TYPES = ['Parquinho', 'Brinquedoteca', 'Cantinho kids', 'Pula-pula', 'Piscina de bolinhas'] as const
+
+export const KIDS_SIZES: { value: KidsSize; label: string; hint: string }[] = [
+  { value: 'pequeno', label: 'Pequeno', hint: 'Cantinho com alguns brinquedos' },
+  { value: 'medio', label: 'Médio', hint: 'Sala ou área com vários brinquedos' },
+  { value: 'grande', label: 'Grande', hint: 'Playground ou brinquedão de vários andares' },
+]
+
+export const KIDS_MONITOR: Record<KidsMonitor, string> = {
+  sim: 'Tem monitora',
+  alguns_horarios: 'Monitora em alguns horários',
+  nao: 'Sem monitora',
+  nao_sei: 'Não sei',
+}
+
+export const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'] as const

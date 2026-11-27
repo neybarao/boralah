@@ -8,15 +8,19 @@ test.describe('Início', () => {
     await expect(page.getByRole('link', { name: /Sobá do Jardim/ }).first()).toBeVisible()
   })
 
-  test('busca e filtro de espaço kids', async ({ page }) => {
+  test('busca e filtro de aberto agora', async ({ page }) => {
     await page.goto('./')
     const list = page.getByRole('heading', { name: 'Todos os lugares' }).locator('..')
-    // Hashi não tem espaço kids: escondido com o filtro padrão
+    // Não existe mais filtro de espaço kids: o app só tem lugares com espaço kids
+    await expect(page.getByRole('button', { name: 'Espaço kids' })).toHaveCount(0)
     await page.getByRole('searchbox').fill('hashi')
-    await expect(list.getByText('0 lugares')).toBeVisible()
-    await page.getByRole('button', { name: 'Espaço kids' }).click()
     await expect(list.getByText('1 lugar')).toBeVisible()
-    await expect(page.getByRole('link', { name: /Hashi Bistrô/ }).first()).toBeVisible()
+    // Hashi não tem horário informado, então some com "Aberto agora"
+    await page.getByRole('button', { name: 'Aberto agora' }).click()
+    await expect(list.getByText('0 lugares')).toBeVisible()
+    // Sobá está aberto o dia todo nos dados de teste
+    await page.getByRole('searchbox').fill('sobá')
+    await expect(list.getByText('1 lugar')).toBeVisible()
   })
 })
 
@@ -73,9 +77,20 @@ test('cadastrar lugar novo', async ({ page }) => {
   await expect(page.getByText('Bairro', { exact: true })).toHaveCount(0)
   await expect(page.getByPlaceholder('@perfil')).toHaveCount(0)
   await page.getByPlaceholder('Ex.: Cantina da esquina').fill('Lugar de Teste')
+  // Sem os dados do espaço kids não salva
+  await page.getByRole('button', { name: 'Salvar lugar' }).click()
+  await expect(page.getByRole('alert')).toContainText('Falta preencher o tipo de espaço kids, a idade e o tamanho do espaço')
+  await page.getByRole('button', { name: 'Brinquedoteca' }).click()
+  await page.getByRole('button', { name: 'Grande' }).click()
+  await page.getByPlaceholder('Ex.: 1 a 5 anos').fill('2 a 8 anos')
+  await page.getByLabel('Monitora').selectOption('sim')
+  await page.getByRole('switch', { name: 'Seg aberto' }).click()
   await page.getByRole('button', { name: 'Salvar lugar' }).click()
   await expect(page.getByRole('status')).toHaveText('Lugar cadastrado')
   await expect(page.getByRole('heading', { name: 'Lugar de Teste', level: 1 })).toBeVisible()
+  await expect(page.getByText('Tem monitora')).toBeVisible()
+  await expect(page.getByText('2 a 8 anos')).toBeVisible()
+  await expect(page.getByRole('listitem').filter({ hasText: 'Seg' })).toContainText('Fechado')
 })
 
 test('puxar a tela para baixo atualiza', async ({ page }) => {

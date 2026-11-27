@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { isOpenNow } from './hours'
 import type { Place, PlaceWithStats, PriceLevel, Visit } from './types'
 
 export function cn(...inputs: ClassValue[]) {
@@ -52,13 +53,13 @@ export function withStats(places: Place[], visits: Visit[]): PlaceWithStats[] {
 
 export interface Filters {
   category: string
-  kids: boolean
+  open: boolean
   never: boolean
   cheap: boolean
   query: string
 }
 
-export const DEFAULT_FILTERS: Filters = { category: 'Todos', kids: true, never: false, cheap: false, query: '' }
+export const DEFAULT_FILTERS: Filters = { category: 'Todos', open: false, never: false, cheap: false, query: '' }
 
 const normalize = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
 
@@ -67,7 +68,8 @@ export function applyFilters(places: PlaceWithStats[], f: Filters) {
   return places.filter(
     (p) =>
       (f.category === 'Todos' || p.category === f.category) &&
-      (!f.kids || p.kids_space) &&
+      p.kids_space &&
+      (!f.open || isOpenNow(p.opening_hours)) &&
       (!f.never || p.visit_count === 0) &&
       (!f.cheap || p.price_level <= 2) &&
       (!q || normalize(`${p.name} ${p.category} ${p.neighborhood ?? ''}`).includes(q)),

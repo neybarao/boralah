@@ -1,6 +1,7 @@
 import { Camera, Trash2, X } from 'lucide-react'
 import { useRef, useState, type FormEvent } from 'react'
 import { useNavigate, useParams } from 'react-router'
+import { HoursEditor, DEFAULT_WEEK } from '@/components/hours-editor'
 import { BackButton, Screen, StickyAction, TopBar } from '@/components/layout'
 import { Button } from '@/components/ui/button'
 import { Chip } from '@/components/ui/chip'
@@ -11,7 +12,16 @@ import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { backend } from '@/lib/data'
 import { useStore } from '@/lib/store'
-import { CATEGORIES, KIDS_TYPES, type PlaceInput, type PriceLevel, type YesNoUnknown } from '@/lib/types'
+import {
+  CATEGORIES,
+  KIDS_MONITOR,
+  KIDS_SIZES,
+  KIDS_TYPES,
+  type KidsMonitor,
+  type PlaceInput,
+  type PriceLevel,
+  type YesNoUnknown,
+} from '@/lib/types'
 import { shrinkImage } from '@/lib/utils'
 import NotFound from './not-found'
 
@@ -25,6 +35,9 @@ const EMPTY: PlaceInput = {
   kids_space: true,
   kids_types: [],
   kids_age: null,
+  kids_size: null,
+  kids_monitor: 'nao_sei',
+  opening_hours: DEFAULT_WEEK,
   high_chair: 'nao_sei',
   changing_table: 'nao_sei',
   photos: [],
@@ -41,7 +54,14 @@ export default function PlaceForm() {
   const [form, setForm] = useState<PlaceInput>(() => {
     if (!existing) return EMPTY
     const { id: _id, created_at: _c, visit_count: _v, avg_rating: _a, last_visit: _l, ...rest } = existing
-    return rest
+    // Lugares antigos podem não ter os campos novos
+    return {
+      ...rest,
+      kids_space: true,
+      kids_size: rest.kids_size ?? null,
+      kids_monitor: rest.kids_monitor ?? 'nao_sei',
+      opening_hours: rest.opening_hours ?? null,
+    }
   })
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -73,6 +93,17 @@ export default function PlaceForm() {
 
   async function submit(e: FormEvent) {
     e.preventDefault()
+    // O espaço kids é o coração do app: tipo, idade e tamanho são obrigatórios
+    const missing = [
+      !form.kids_types.length && 'o tipo de espaço kids',
+      !form.kids_age && 'a idade',
+      !form.kids_size && 'o tamanho do espaço',
+    ].filter(Boolean)
+    if (missing.length) {
+      setError(`Falta preencher ${missing.join(', ').replace(/, ([^,]*)$/, ' e $1')}.`)
+      document.getElementById('kids')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      return
+    }
     setSaving(true)
     setError(null)
     try {
@@ -161,44 +192,73 @@ export default function PlaceForm() {
           />
         </Label>
 
-        <section className="flex flex-col gap-4 rounded-xl bg-kids-surface p-4">
-          <div className="flex items-center justify-between gap-3">
-            <span id="kids-label" className="text-[15px] font-extrabold text-kids">
-              Tem espaço kids?
-            </span>
-            <Switch aria-labelledby="kids-label" checked={form.kids_space} onCheckedChange={(v) => set('kids_space', v)} />
+        <section id="kids" className="flex flex-col gap-4.5 rounded-xl bg-kids-surface p-4">
+          <div className="flex flex-col gap-0.5">
+            <h2 className="text-[15px] font-extrabold text-kids">Espaço kids</h2>
+            <span className="text-xs font-medium text-kids-label">O que as famílias precisam saber antes de sair de casa</span>
           </div>
 
-          {form.kids_space && (
-            <>
-              <fieldset>
-                <legend className="mb-2 text-[13px] font-bold text-kids-label">Que tipo</legend>
-                <div className="flex flex-wrap gap-2">
-                  {KIDS_TYPES.map((k) => {
-                    const on = form.kids_types.includes(k)
-                    return (
-                      <Chip
-                        key={k}
-                        active={on}
-                        onClick={() => set('kids_types', on ? form.kids_types.filter((x) => x !== k) : [...form.kids_types, k])}
-                      >
-                        {k}
-                      </Chip>
-                    )
-                  })}
-                </div>
-              </fieldset>
-              <Label className="text-[13px] text-kids-label">
-                Bom pra idade
-                <Input
-                  placeholder="Ex.: 1 a 3 anos"
-                  value={form.kids_age ?? ''}
-                  onChange={(e) => set('kids_age', text(e.target.value))}
-                  className="h-11 border-kids-border"
-                />
-              </Label>
-            </>
-          )}
+          <fieldset>
+            <legend className="mb-2 text-[13px] font-bold text-kids-label">Que tipo</legend>
+            <div className="flex flex-wrap gap-2">
+              {KIDS_TYPES.map((k) => {
+                const on = form.kids_types.includes(k)
+                return (
+                  <Chip
+                    key={k}
+                    active={on}
+                    onClick={() => set('kids_types', on ? form.kids_types.filter((x) => x !== k) : [...form.kids_types, k])}
+                  >
+                    {k}
+                  </Chip>
+                )
+              })}
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend className="mb-2 text-[13px] font-bold text-kids-label">Tamanho do espaço</legend>
+            <div className="grid grid-cols-3 gap-2">
+              {KIDS_SIZES.map((s) => (
+                <Chip
+                  key={s.value}
+                  active={form.kids_size === s.value}
+                  onClick={() => set('kids_size', s.value)}
+                  className="justify-center"
+                >
+                  {s.label}
+                </Chip>
+              ))}
+            </div>
+            <p key={form.kids_size ?? 'none'} className="animate-rise mt-1.5 min-h-4 text-xs font-medium text-kids-label">
+              {KIDS_SIZES.find((s) => s.value === form.kids_size)?.hint ?? 'Escolha o que mais se parece'}
+            </p>
+          </fieldset>
+
+          <Label className="text-[13px] text-kids-label">
+            Bom pra idade
+            <Input
+              placeholder="Ex.: 1 a 5 anos"
+              value={form.kids_age ?? ''}
+              onChange={(e) => set('kids_age', text(e.target.value))}
+              className="h-11 border-kids-border"
+            />
+          </Label>
+
+          <Label className="gap-1.5 text-[13px] text-kids-label">
+            Monitora
+            <NativeSelect
+              value={form.kids_monitor}
+              onChange={(e) => set('kids_monitor', e.target.value as KidsMonitor)}
+              className="h-11 border-kids-border"
+            >
+              {(Object.keys(KIDS_MONITOR) as KidsMonitor[]).map((k) => (
+                <option key={k} value={k}>
+                  {KIDS_MONITOR[k]}
+                </option>
+              ))}
+            </NativeSelect>
+          </Label>
 
           <div className="grid grid-cols-2 gap-2.5">
             {(
@@ -221,6 +281,23 @@ export default function PlaceForm() {
               </Label>
             ))}
           </div>
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <div className="flex items-center justify-between gap-3">
+            <span id="hours-label" className="text-sm font-bold">
+              Horário de funcionamento
+            </span>
+            <label className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
+              Não sei
+              <Switch
+                aria-label="Não sei o horário"
+                checked={!form.opening_hours}
+                onCheckedChange={(unknown) => set('opening_hours', unknown ? null : DEFAULT_WEEK)}
+              />
+            </label>
+          </div>
+          {form.opening_hours && <HoursEditor value={form.opening_hours} onChange={(v) => set('opening_hours', v)} />}
         </section>
 
         <Label>

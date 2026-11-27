@@ -2,6 +2,7 @@ import type React from 'react'
 import { Link } from 'react-router'
 import { Badge } from '@/components/ui/badge'
 import type { PlaceWithStats } from '@/lib/types'
+import { openStatus } from '@/lib/hours'
 import { formatRating, money } from '@/lib/utils'
 import { PlaceThumb } from './place-thumb'
 
@@ -10,6 +11,21 @@ export function VisitBadge({ place }: { place: PlaceWithStats }) {
   return (
     <Badge>
       Nota {formatRating(place.avg_rating ?? 0)} · {place.visit_count} {place.visit_count === 1 ? 'visita' : 'visitas'}
+    </Badge>
+  )
+}
+
+/** "Aberto agora" ou "Fechado", com um ponto que pulsa quando está aberto */
+export function OpenBadge({ place, long = false }: { place: PlaceWithStats; long?: boolean }) {
+  const s = openStatus(place.opening_hours)
+  if (!s) return null
+  return (
+    <Badge variant={s.open ? 'kids' : 'neutral'} className="gap-1.5">
+      <span className="relative flex size-1.5" aria-hidden="true">
+        {s.open && <span className="absolute inset-0 animate-ping rounded-full bg-current opacity-60" />}
+        <span className="relative size-1.5 rounded-full bg-current" />
+      </span>
+      {long ? s.label : s.open ? 'Aberto' : 'Fechado'}
     </Badge>
   )
 }
@@ -33,7 +49,8 @@ export function PlaceRow({ place, index = 0 }: { place: PlaceWithStats; index?: 
         <span className="truncate text-base font-bold leading-tight">{place.name}</span>
         <span className="truncate text-[13px] font-medium text-muted-foreground">{placeMeta(place)}</span>
         <div className="mt-0.5 flex flex-wrap gap-1.5">
-          {place.kids_space && <Badge variant="kids">{place.kids_types[0] ?? 'Espaço kids'}</Badge>}
+          <OpenBadge place={place} />
+          {place.kids_types[0] && <Badge variant="kids">{place.kids_types[0]}</Badge>}
           <VisitBadge place={place} />
         </div>
       </div>

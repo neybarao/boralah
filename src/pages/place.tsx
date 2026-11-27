@@ -1,14 +1,16 @@
+import type React from 'react'
 import { AtSign, MapPin, Pencil, Plus, Trash2 } from 'lucide-react'
 import { Link, useParams } from 'react-router'
 import { BackButton, Screen, StickyAction } from '@/components/layout'
-import { placeMeta, VisitBadge } from '@/components/place-row'
+import { OpenBadge, placeMeta, VisitBadge } from '@/components/place-row'
 import { PlaceThumb } from '@/components/place-thumb'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { backend } from '@/lib/data'
 import { useStore } from '@/lib/store'
-import type { BabyLiked, WouldReturn, YesNoUnknown } from '@/lib/types'
-import { formatDate, formatRating } from '@/lib/utils'
+import { formatDay } from '@/lib/hours'
+import { KIDS_MONITOR, KIDS_SIZES, WEEKDAYS, type BabyLiked, type WouldReturn, type YesNoUnknown } from '@/lib/types'
+import { cn, formatDate, formatRating } from '@/lib/utils'
 import NotFound from './not-found'
 
 const YNU: Record<YesNoUnknown, string> = { sim: 'Sim', nao: 'Não', nao_sei: 'Não sei' }
@@ -35,6 +37,8 @@ export default function PlacePage() {
 
   const mine = visits.filter((v) => v.place_id === place.id)
   const handle = place.instagram?.replace(/^@/, '').trim()
+  const size = KIDS_SIZES.find((s) => s.value === place.kids_size)
+  const today = new Date().getDay()
 
   return (
     <Screen bleed className="pb-32">
@@ -64,11 +68,7 @@ export default function PlacePage() {
         <h1 className="text-[26px] leading-tight font-extrabold tracking-tight">{place.name}</h1>
         <span className="text-sm font-medium text-muted-foreground">{placeMeta(place)}</span>
         <div className="mt-0.5 flex flex-wrap gap-1.5">
-          {place.kids_types.map((k) => (
-            <Badge key={k} variant="kids">
-              {k}
-            </Badge>
-          ))}
+          <OpenBadge place={place} long />
           <VisitBadge place={place} />
         </div>
       </div>
@@ -92,29 +92,62 @@ export default function PlacePage() {
         </div>
       )}
 
-      {place.kids_space && (
-        <section className="animate-rise mx-5 mt-2 flex flex-col gap-2.5 rounded-xl bg-kids-surface px-4.5 py-4 [animation-delay:160ms]">
-          <h2 className="text-[15px] font-extrabold text-kids">Para o bebê</h2>
-          <dl className="grid grid-cols-2 gap-x-4 gap-y-2.5 text-[13px] leading-snug">
-            <div className="flex flex-col gap-0.5">
-              <dt className="font-semibold text-kids-label">Espaço</dt>
-              <dd className="font-bold">{place.kids_types.join(', ') || 'Tem'}</dd>
+      <section className="animate-rise mx-5 mt-2 flex flex-col gap-3.5 rounded-xl bg-kids-surface px-4.5 py-4 [animation-delay:160ms]">
+        <h2 className="text-[15px] font-extrabold text-kids">Espaço kids</h2>
+        {place.kids_types.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {place.kids_types.map((k, i) => (
+              <Badge
+                key={k}
+                variant="kids"
+                className="animate-pop stagger bg-background"
+                style={{ '--i': i } as React.CSSProperties}
+              >
+                {k}
+              </Badge>
+            ))}
+          </div>
+        )}
+        <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-[13px] leading-snug">
+          {[
+            ['Bom pra idade', place.kids_age || 'Não sei'],
+            ['Tamanho', size ? `${size.label} · ${size.hint.toLowerCase()}` : 'Não sei'],
+            ['Monitora', KIDS_MONITOR[place.kids_monitor ?? 'nao_sei']],
+            ['Cadeirão', YNU[place.high_chair]],
+            ['Trocador', YNU[place.changing_table]],
+          ].map(([label, value]) => (
+            <div key={label} className="flex flex-col gap-0.5">
+              <dt className="font-semibold text-kids-label">{label}</dt>
+              <dd className="font-bold">{value}</dd>
             </div>
-            <div className="flex flex-col gap-0.5">
-              <dt className="font-semibold text-kids-label">Bom pra idade</dt>
-              <dd className="font-bold">{place.kids_age || 'Não sei'}</dd>
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <dt className="font-semibold text-kids-label">Cadeirão</dt>
-              <dd className="font-bold">{YNU[place.high_chair]}</dd>
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <dt className="font-semibold text-kids-label">Trocador</dt>
-              <dd className="font-bold">{YNU[place.changing_table]}</dd>
-            </div>
-          </dl>
-        </section>
-      )}
+          ))}
+        </dl>
+      </section>
+
+      <section className="animate-rise mx-5 mt-3 flex flex-col gap-2.5 rounded-xl border-[1.5px] border-line px-4.5 py-4 [animation-delay:200ms]">
+        <h2 className="text-[15px] font-extrabold">Horário</h2>
+        {place.opening_hours ? (
+          <ul className="flex flex-col gap-1 text-[13px]">
+            {[1, 2, 3, 4, 5, 6, 0].map((d) => (
+              <li
+                key={d}
+                className={cn(
+                  'flex justify-between rounded-md px-2 py-1 transition-colors',
+                  d === today ? 'bg-muted font-bold' : 'font-medium text-text-soft',
+                )}
+              >
+                <span>
+                  {WEEKDAYS[d]}
+                  {d === today && ' · hoje'}
+                </span>
+                <span className="tabular-nums">{formatDay(place.opening_hours![d])}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-[13px] font-medium text-muted-foreground">Horário ainda não informado.</p>
+        )}
+      </section>
 
       {place.notes && <p className="px-5 pt-5 text-sm leading-relaxed text-text-soft">{place.notes}</p>}
 

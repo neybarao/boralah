@@ -11,9 +11,13 @@ create table if not exists public.places (
   neighborhood text,
   maps_url text,
   instagram text,
-  kids_space boolean not null default false,
+  kids_space boolean not null default true, -- o app só cadastra lugares com espaço kids
   kids_types text[] not null default '{}',
   kids_age text,
+  kids_size text check (kids_size in ('pequeno', 'medio', 'grande')),
+  kids_monitor text not null default 'nao_sei' check (kids_monitor in ('sim', 'alguns_horarios', 'nao', 'nao_sei')),
+  -- 7 itens, domingo a sábado: {"open":"11:00","close":"23:00"} ou null (fechado). Coluna null = horário não informado
+  opening_hours jsonb,
   high_chair text not null default 'nao_sei' check (high_chair in ('sim', 'nao', 'nao_sei')),
   changing_table text not null default 'nao_sei' check (changing_table in ('sim', 'nao', 'nao_sei')),
   photos text[] not null default '{}',
@@ -84,3 +88,15 @@ create policy "fotos: admin envia" on storage.objects for insert
 drop policy if exists "fotos: admin apaga" on storage.objects;
 create policy "fotos: admin apaga" on storage.objects for delete
   using (bucket_id = 'fotos' and public.is_admin());
+
+-- ---------- Migração: app só de espaço kids (nov/2026) ----------
+-- Para bancos criados antes desta versão. Pode rodar de novo sem problema.
+alter table public.places
+  add column if not exists opening_hours jsonb,
+  add column if not exists kids_size text check (kids_size in ('pequeno', 'medio', 'grande')),
+  add column if not exists kids_monitor text not null default 'nao_sei'
+    check (kids_monitor in ('sim', 'alguns_horarios', 'nao', 'nao_sei'));
+alter table public.places alter column kids_space set default true;
+update public.places
+  set kids_monitor = 'sim', kids_types = array_remove(kids_types, 'Monitores')
+  where 'Monitores' = any (kids_types);
