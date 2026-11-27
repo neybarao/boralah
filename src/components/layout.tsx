@@ -1,7 +1,8 @@
 import { Bookmark, ChevronLeft, Dices, House, X } from 'lucide-react'
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, NavLink, useLocation, useNavigate, useNavigationType } from 'react-router'
+import { scroller } from '@/lib/scroller'
 import { cn } from '@/lib/utils'
 
 type NavState = { tab?: boolean; back?: boolean; toast?: string } | null
@@ -35,6 +36,28 @@ export function Screen({
       {children}
     </div>
   )
+}
+
+const positions = new Map<string, number>()
+
+/**
+ * Posição da rolagem entre telas: ao avançar, a tela nova começa do topo;
+ * ao voltar, a anterior reaparece onde estava.
+ */
+export function ScrollManager() {
+  const { pathname } = useLocation()
+  const navType = useNavigationType()
+  const state = useLocation().state as NavState
+  useLayoutEffect(() => {
+    const box = scroller()
+    const back = navType === 'POP' || state?.back
+    box.scrollTop = back ? (positions.get(pathname) ?? 0) : 0
+    return () => {
+      positions.set(pathname, box.scrollTop)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname])
+  return null
 }
 
 /**

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { HashRouter, Route, Routes } from 'react-router'
-import { Toast } from '@/components/layout'
+import { ScrollManager, Toast } from '@/components/layout'
 import { UpdatePrompt } from '@/components/update-prompt'
 import { installPressSpring } from '@/lib/motion'
 import { StoreProvider } from '@/lib/store'
@@ -31,6 +31,7 @@ export default function App() {
           <Route path="/lugar/:id/visita" element={<VisitForm />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <ScrollManager />
         <Toast />
         <UpdatePrompt />
       </HashRouter>

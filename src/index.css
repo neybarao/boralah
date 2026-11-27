@@ -124,6 +124,20 @@
     /* Sem zoom por toque duplo */
     touch-action: manipulation;
   }
+  /* A página não rola: quem rola é o #root (veja src/lib/scroller.ts) */
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+  #root {
+    position: fixed;
+    inset: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
   body {
     background: var(--color-background);
     transition: background-color 200ms ease, color 200ms ease;

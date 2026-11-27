@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { backend } from '@/lib/data'
 import { gsap, reducedMotion } from '@/lib/motion'
+import { scroller } from '@/lib/scroller'
 import { useStore } from '@/lib/store'
 import { formatDay } from '@/lib/hours'
 import { KIDS_MONITOR, KIDS_SIZES, WEEKDAYS, type BabyLiked, type WouldReturn, type YesNoUnknown } from '@/lib/types'
@@ -45,7 +46,7 @@ function useHeroParallax(ready: boolean) {
     let frame = 0
     const update = () => {
       frame = 0
-      const y = window.scrollY
+      const y = scroller().scrollTop
       if (y < 0) {
         setY(y)
         setScale(1 + -y / el.offsetHeight)
@@ -58,9 +59,10 @@ function useHeroParallax(ready: boolean) {
       if (!frame) frame = requestAnimationFrame(update)
     }
     gsap.set(el, { transformOrigin: '50% 100%' })
-    window.addEventListener('scroll', onScroll, { passive: true })
+    const box = scroller()
+    box.addEventListener('scroll', onScroll, { passive: true })
     return () => {
-      window.removeEventListener('scroll', onScroll)
+      box.removeEventListener('scroll', onScroll)
       cancelAnimationFrame(frame)
     }
   }, [ready])

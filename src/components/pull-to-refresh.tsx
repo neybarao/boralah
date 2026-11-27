@@ -1,6 +1,7 @@
 import { RefreshCw } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { scroller } from '@/lib/scroller'
 
 /** Quanto puxar (em px, já amortecido) para disparar a atualização */
 const THRESHOLD = 70
@@ -28,13 +29,13 @@ export function PullToRefresh({ onRefresh }: { onRefresh: () => Promise<unknown>
       setPull(v)
     }
     const onStart = (e: TouchEvent) => {
-      if (busy.current || window.scrollY > 0 || e.touches.length !== 1) return
+      if (busy.current || scroller().scrollTop > 0 || e.touches.length !== 1) return
       startY.current = e.touches[0].clientY
     }
     const onMove = (e: TouchEvent) => {
       if (startY.current === null) return
       const dy = e.touches[0].clientY - startY.current
-      if (dy <= 0 || window.scrollY > 0) {
+      if (dy <= 0 || scroller().scrollTop > 0) {
         if (pullRef.current) setBoth(0)
         return
       }
