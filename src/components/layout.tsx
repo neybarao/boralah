@@ -167,7 +167,7 @@ export function BottomNav() {
     <Fixed>
       <nav
         aria-label="Navegação principal"
-        className="pb-safe pointer-events-none fixed inset-x-0 bottom-0 z-10 mx-auto flex w-full max-w-md justify-center bg-gradient-to-t from-background via-background/80 to-transparent pt-6"
+        className="pointer-events-none fixed inset-x-0 bottom-0 z-10 pb-4 mx-auto flex w-full max-w-md justify-center bg-gradient-to-t from-background via-background/80 to-transparent pt-6"
       >
         <div
           ref={ref}

@@ -11,6 +11,7 @@ import { backend } from '@/lib/data'
 import { gsap, reducedMotion } from '@/lib/motion'
 import { applyTopTint, topColor } from '@/lib/photo-tint'
 import { scrollEvents, scroller } from '@/lib/scroller'
+import { getTopGap } from '@/lib/viewport'
 import { useStore } from '@/lib/store'
 import { formatDay } from '@/lib/hours'
 import { KIDS_MONITOR, KIDS_SIZES, WEEKDAYS, type BabyLiked, type WouldReturn, type YesNoUnknown } from '@/lib/types'
@@ -47,7 +48,8 @@ function useHeroParallax(ready: boolean) {
     let frame = 0
     const update = () => {
       frame = 0
-      const y = scroller().scrollTop
+      // Em repouso a página fica rolada em getTopGap(): a foto começa por trás da status bar
+      const y = scroller().scrollTop - getTopGap()
       if (y < 0) {
         setY(y)
         setScale(1 + -y / el.offsetHeight)
@@ -66,6 +68,19 @@ function useHeroParallax(ready: boolean) {
       box.removeEventListener('scroll', onScroll)
       cancelAnimationFrame(frame)
     }
+  }, [ready])
+
+  // No app instalado (standalone) a página começa abaixo da status bar. A foto
+  // ganha essa altura a mais em cima e a tela abre já rolada nela: assim a foto
+  // aparece por trás do relógio e da bateria, como o conteúdo do Dia ao rolar.
+  useEffect(() => {
+    if (!ready) return
+    const gap = getTopGap()
+    if (!gap) return
+    const t = requestAnimationFrame(() => {
+      if (scroller().scrollTop < gap) scroller().scrollTop = gap
+    })
+    return () => cancelAnimationFrame(t)
   }, [ready])
   return ref
 }
@@ -105,13 +120,13 @@ export default function PlacePage() {
       <div className="relative [clip-path:inset(-100vh_0_0_0)]">
         <div ref={heroRef} className="will-change-transform">
         {place.photos.length > 1 ? (
-          <div className="no-scrollbar animate-hero flex h-[calc(19.5rem+env(safe-area-inset-top))] snap-x snap-mandatory overflow-x-auto">
+          <div className="no-scrollbar animate-hero flex h-[calc(19.5rem+env(safe-area-inset-top)+var(--top-gap,0px))] snap-x snap-mandatory overflow-x-auto">
             {place.photos.map((src) => (
-              <img key={src} src={src} alt="" className="h-[calc(19.5rem+env(safe-area-inset-top))] w-full shrink-0 snap-center object-cover" />
+              <img key={src} src={src} alt="" className="h-[calc(19.5rem+env(safe-area-inset-top)+var(--top-gap,0px))] w-full shrink-0 snap-center object-cover" />
             ))}
           </div>
         ) : (
-          <PlaceThumb place={place} className="animate-hero h-[calc(19.5rem+env(safe-area-inset-top))] w-full" iconSize={48} />
+          <PlaceThumb place={place} className="animate-hero h-[calc(19.5rem+env(safe-area-inset-top)+var(--top-gap,0px))] w-full" iconSize={48} />
         )}
         </div>
         {/* Sombra suave no topo: deixa o relógio e a bateria legíveis sobre qualquer foto */}
@@ -119,7 +134,7 @@ export default function PlacePage() {
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 top-0 h-[calc(env(safe-area-inset-top)+4.5rem)] bg-gradient-to-b from-black/45 to-transparent"
         />
-        <div className="absolute inset-x-5 top-[calc(env(safe-area-inset-top)+1.75rem)] flex justify-between">
+        <div className="absolute inset-x-5 top-[calc(var(--top-gap,0px)+env(safe-area-inset-top)+1.75rem)] flex justify-between">
           <BackButton to="/" />
           {isAdmin && (
             <Button asChild variant="muted" size="icon" aria-label="Editar lugar" className="bg-background hover:bg-background/90">
