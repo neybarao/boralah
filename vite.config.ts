@@ -27,6 +27,7 @@ export default defineConfig({
         short_name: 'BoraLah',
         description: 'Onde comer hoje, com espaço kids.',
         lang: 'pt-BR',
+        id: BASE,
         start_url: BASE,
         scope: BASE,
         // fullscreen: no iPhone, o conteúdo desenha por trás da status bar.
