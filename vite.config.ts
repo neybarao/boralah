@@ -29,7 +29,11 @@ export default defineConfig({
         lang: 'pt-BR',
         start_url: BASE,
         scope: BASE,
-        display: 'standalone',
+        // fullscreen: no iPhone, o conteúdo desenha por trás da status bar.
+        // Mesmo esquema do app Raul's World, que funciona no iOS atual. Navegadores
+        // sem fullscreen caem em standalone (barra do sistema, sem barra de endereço).
+        display: 'fullscreen',
+        display_override: ['fullscreen', 'standalone'],
         orientation: 'portrait',
         background_color: '#FFFFFF',
         theme_color: '#C8361F',
