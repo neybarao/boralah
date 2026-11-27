@@ -30,9 +30,10 @@ export default defineConfig({
         id: BASE,
         start_url: BASE,
         scope: BASE,
-        // Tela cheia: o fundo vai por trás da status bar no app instalado
-        display: 'fullscreen',
-        display_override: ['fullscreen', 'standalone'],
+        // standalone, como o Dia: no iPhone a página vai até o fim da tela (o menu
+        // encosta no rodapé). Em fullscreen o iOS cortava os 62 pt de baixo.
+        // A foto por trás da status bar vem do black-translucent no index.html.
+        display: 'standalone',
         orientation: 'portrait',
         background_color: '#FFFFFF',
         theme_color: '#FFFFFF',
