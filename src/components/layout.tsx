@@ -74,7 +74,7 @@ export function BackButton({ to, close = false, label }: { to?: string; close?: 
   const navigate = useNavigate()
   const Icon = close ? X : ChevronLeft
   const cls =
-    'flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-full bg-muted outline-none transition-transform duration-150 active:scale-90 focus-visible:ring-2 focus-visible:ring-ring'
+    'flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-full bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring'
   const aria = label ?? (close ? 'Fechar' : 'Voltar')
   if (to)
     return (

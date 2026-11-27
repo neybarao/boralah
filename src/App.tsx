@@ -1,6 +1,8 @@
+import { useEffect } from 'react'
 import { HashRouter, Route, Routes } from 'react-router'
 import { Toast } from '@/components/layout'
 import { UpdatePrompt } from '@/components/update-prompt'
+import { installPressSpring } from '@/lib/motion'
 import { StoreProvider } from '@/lib/store'
 import Draw from '@/pages/draw'
 import Home from '@/pages/home'
@@ -14,6 +16,7 @@ import Visits from '@/pages/visits'
 // HashRouter: as URLs ficam com "#/" porque o GitHub Pages não sabe
 // redirecionar rotas de SPA para o index.html.
 export default function App() {
+  useEffect(() => installPressSpring(), [])
   return (
     <StoreProvider>
       <HashRouter>

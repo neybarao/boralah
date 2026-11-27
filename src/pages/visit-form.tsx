@@ -76,7 +76,7 @@ export default function VisitForm() {
                 aria-label={n === 1 ? '1 estrela' : `${n} estrelas`}
                 aria-pressed={rating === n}
                 onClick={() => setRating(n)}
-                className="flex size-13 cursor-pointer items-center justify-center rounded-lg bg-muted outline-none transition-transform duration-150 active:scale-90 focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex size-13 cursor-pointer items-center justify-center rounded-lg bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <Star
                   key={n <= rating ? `on-${rating}` : 'off'}

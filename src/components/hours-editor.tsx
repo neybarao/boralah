@@ -8,7 +8,7 @@ const DEFAULT_DAY: DayHours = { open: '11:00', close: '23:00' }
 export const DEFAULT_WEEK: OpeningHours = Array.from({ length: 7 }, () => ({ ...DEFAULT_DAY }))
 
 const timeCls =
-  'h-10 w-full min-w-0 rounded-md border-[1.5px] border-line bg-background px-2 text-center text-sm font-semibold tabular-nums outline-none transition-colors focus-visible:border-foreground'
+  'h-10 min-w-0 flex-1 rounded-md border-[1.5px] border-line bg-background px-2 text-center text-sm font-semibold tabular-nums outline-none transition-colors focus-visible:border-foreground'
 
 /**
  * Horário por dia da semana. Começa pela segunda, que é como a gente lê.
@@ -26,7 +26,7 @@ export function HoursEditor({ value, onChange }: { value: OpeningHours; onChange
         return (
           <div
             key={i}
-            className={cn('animate-rise stagger grid grid-cols-[3rem_auto_1fr] items-center gap-3 transition-opacity', !d && 'opacity-60')}
+            className={cn('animate-rise stagger grid grid-cols-[2.75rem_auto_minmax(0,1fr)] items-center gap-2.5 transition-opacity', !d && 'opacity-60')}
             style={{ '--i': k } as React.CSSProperties}
           >
             <span className="text-sm font-bold">
@@ -38,7 +38,7 @@ export function HoursEditor({ value, onChange }: { value: OpeningHours; onChange
               onCheckedChange={(on) => setDay(i, on ? (first ? { ...first } : { ...DEFAULT_DAY }) : null)}
             />
             {d ? (
-              <div className="animate-pop flex items-center gap-1.5">
+              <div className="animate-pop flex min-w-0 items-center gap-1.5">
                 <input
                   type="time"
                   aria-label={`${WEEKDAYS[i]} abre`}
@@ -65,7 +65,7 @@ export function HoursEditor({ value, onChange }: { value: OpeningHours; onChange
         <button
           type="button"
           onClick={() => onChange(value.map((d) => (d ? { ...first } : null)))}
-          className="mt-1 flex cursor-pointer items-center gap-1.5 self-start rounded-full px-1 py-1 text-xs font-bold text-primary transition-transform active:scale-95"
+          className="mt-1 flex cursor-pointer items-center gap-1.5 self-start rounded-full px-1 py-1 text-xs font-bold text-primary"
         >
           <Copy size={14} aria-hidden="true" /> Usar o horário de {WEEKDAYS[order.find((i) => value[i])!]} nos dias abertos
         </button>

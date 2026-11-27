@@ -1,4 +1,5 @@
 import type React from 'react'
+import { useEffect, useRef } from 'react'
 import { AtSign, MapPin, Pencil, Plus, Trash2 } from 'lucide-react'
 import { Link, useParams } from 'react-router'
 import { BackButton, Screen, StickyAction } from '@/components/layout'
@@ -7,6 +8,7 @@ import { PlaceThumb } from '@/components/place-thumb'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { backend } from '@/lib/data'
+import { gsap, reducedMotion } from '@/lib/motion'
 import { useStore } from '@/lib/store'
 import { formatDay } from '@/lib/hours'
 import { KIDS_MONITOR, KIDS_SIZES, WEEKDAYS, type BabyLiked, type WouldReturn, type YesNoUnknown } from '@/lib/types'
@@ -29,10 +31,47 @@ function Stars({ value }: { value: number }) {
   )
 }
 
+/**
+ * Foto de capa com profundidade: ao rolar, ela sobe mais devagar que o texto;
+ * ao puxar além do topo (o quique do iOS), ela cresce em vez de abrir um vão.
+ */
+function useHeroParallax(ready: boolean) {
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const el = ref.current
+    if (!el || reducedMotion()) return
+    const setY = gsap.quickSetter(el, 'y', 'px')
+    const setScale = gsap.quickSetter(el, 'scale')
+    let frame = 0
+    const update = () => {
+      frame = 0
+      const y = window.scrollY
+      if (y < 0) {
+        setY(y)
+        setScale(1 + -y / el.offsetHeight)
+      } else {
+        setY(y * 0.4)
+        setScale(1)
+      }
+    }
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update)
+    }
+    gsap.set(el, { transformOrigin: '50% 100%' })
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      cancelAnimationFrame(frame)
+    }
+  }, [ready])
+  return ref
+}
+
 export default function PlacePage() {
   const { id } = useParams()
   const { getPlace, visits, isAdmin, refresh } = useStore()
   const place = getPlace(id)
+  const heroRef = useHeroParallax(!!place)
   if (!place) return <NotFound />
 
   const mine = visits.filter((v) => v.place_id === place.id)
@@ -42,17 +81,25 @@ export default function PlacePage() {
 
   return (
     <Screen bleed className="pb-32">
-      <div className="relative overflow-hidden">
+      {/* Corta só embaixo e dos lados: no quique do topo a foto pode crescer para cima */}
+      <div className="relative [clip-path:inset(-100vh_0_0_0)]">
+        <div ref={heroRef} className="will-change-transform">
         {place.photos.length > 1 ? (
-          <div className="no-scrollbar animate-hero flex h-[calc(16.25rem+env(safe-area-inset-top))] snap-x snap-mandatory overflow-x-auto">
+          <div className="no-scrollbar animate-hero flex h-[calc(19.5rem+env(safe-area-inset-top))] snap-x snap-mandatory overflow-x-auto">
             {place.photos.map((src) => (
-              <img key={src} src={src} alt="" className="h-[calc(16.25rem+env(safe-area-inset-top))] w-full shrink-0 snap-center object-cover" />
+              <img key={src} src={src} alt="" className="h-[calc(19.5rem+env(safe-area-inset-top))] w-full shrink-0 snap-center object-cover" />
             ))}
           </div>
         ) : (
-          <PlaceThumb place={place} className="animate-hero h-[calc(16.25rem+env(safe-area-inset-top))] w-full" iconSize={48} />
+          <PlaceThumb place={place} className="animate-hero h-[calc(19.5rem+env(safe-area-inset-top))] w-full" iconSize={48} />
         )}
-        <div className="absolute inset-x-5 top-[calc(env(safe-area-inset-top)+1.25rem)] flex justify-between">
+        </div>
+        {/* Sombra suave no topo: deixa o relógio e a bateria legíveis sobre qualquer foto */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 h-[calc(env(safe-area-inset-top)+4.5rem)] bg-gradient-to-b from-black/45 to-transparent"
+        />
+        <div className="absolute inset-x-5 top-[calc(env(safe-area-inset-top)+1.75rem)] flex justify-between">
           <BackButton to="/" />
           {isAdmin && (
             <Button asChild variant="muted" size="icon" aria-label="Editar lugar" className="bg-background hover:bg-background/90">
@@ -111,7 +158,7 @@ export default function PlacePage() {
         <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-[13px] leading-snug">
           {[
             ['Bom pra idade', place.kids_age || 'Não sei'],
-            ['Tamanho', size ? `${size.label} · ${size.hint.toLowerCase()}` : 'Não sei'],
+            ['Tamanho', size?.label ?? 'Não sei'],
             ['Monitora', KIDS_MONITOR[place.kids_monitor ?? 'nao_sei']],
             ['Cadeirão', YNU[place.high_chair]],
             ['Trocador', YNU[place.changing_table]],

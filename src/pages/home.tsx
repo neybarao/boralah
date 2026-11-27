@@ -1,15 +1,17 @@
 import { Clock, Dices, LogIn, Moon, Plus, Search, Star, Sun } from 'lucide-react'
-import { useMemo } from 'react'
+import { useLayoutEffect, useMemo, useRef } from 'react'
 import type React from 'react'
 import { Link } from 'react-router'
 import { BottomNav, Screen } from '@/components/layout'
 import { PullToRefresh } from '@/components/pull-to-refresh'
 import { checkForUpdate } from '@/lib/sw-update'
+import { AnimatedNumber } from '@/components/animated-number'
 import { PlaceRow } from '@/components/place-row'
 import { PlaceThumb } from '@/components/place-thumb'
 import { Button } from '@/components/ui/button'
 import { Chip } from '@/components/ui/chip'
 import { isDemo } from '@/lib/supabase'
+import { Flip, gsap, reducedMotion } from '@/lib/motion'
 import { useStore } from '@/lib/store'
 import { useTheme } from '@/lib/theme'
 import { CATEGORIES } from '@/lib/types'
@@ -28,7 +30,28 @@ export default function Home() {
         .sort((a, b) => a.last_visit!.localeCompare(b.last_visit!)),
     [places],
   )
-  const set = (patch: Partial<typeof filters>) => setFilters({ ...filters, ...patch })
+  const listRef = useRef<HTMLDivElement>(null)
+  const flipState = useRef<Flip.FlipState | null>(null)
+
+  // Antes de trocar o filtro, guarda onde cada lugar estava
+  const set = (patch: Partial<typeof filters>) => {
+    if (listRef.current && !reducedMotion()) flipState.current = Flip.getState(listRef.current.children)
+    setFilters({ ...filters, ...patch })
+  }
+
+  // Depois de trocar, os lugares que ficaram deslizam até a posição nova
+  useLayoutEffect(() => {
+    const state = flipState.current
+    flipState.current = null
+    if (!state || !listRef.current) return
+    Flip.from(state, {
+      targets: listRef.current.children,
+      duration: 0.55,
+      ease: 'power3.out',
+      onEnter: (els) =>
+        gsap.fromTo(els, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, ease: 'power3.out', stagger: 0.03 }),
+    })
+  }, [list])
 
   return (
     <Screen className="pb-28">
@@ -115,9 +138,7 @@ export default function Home() {
             <span className="text-xl leading-tight font-extrabold">Sem ideia? A gente escolhe.</span>
             <span className="text-sm leading-snug font-medium text-primary-soft-foreground">
               Sorteia entre {list.length === 1 ? 'o' : 'os'}{' '}
-              <span key={list.length} className="animate-pop inline-block font-extrabold text-primary-foreground">
-                {list.length}
-              </span>{' '}
+              <AnimatedNumber value={list.length} className="font-extrabold text-primary-foreground" />{' '}
               {list.length === 1 ? 'lugar' : 'lugares'} que passam nos seus filtros.
             </span>
           </div>
@@ -194,9 +215,11 @@ export default function Home() {
           </div>
         )}
 
-        <div className="mt-2 flex flex-col">
+        <div ref={listRef} className="mt-2 flex flex-col">
           {list.map((p, i) => (
-            <PlaceRow key={p.id} place={p} index={i} />
+            <div key={p.id} data-flip-id={p.id}>
+              <PlaceRow place={p} index={i} />
+            </div>
           ))}
         </div>
       </section>
